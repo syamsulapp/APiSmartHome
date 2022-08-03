@@ -7,11 +7,15 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\HasApiTokens;
 use Laravel\Lumen\Auth\Authorizable;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
-    use Authenticatable, Authorizable, HasFactory;
+    use HasApiTokens, Authenticatable, Authorizable, HasFactory;
+
+    protected $table = 'table_users';
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +23,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'username', 'email', 'role', 'key_devices',
+        'name', 'username', 'email', 'role' , 'password',
     ];
 
     /**
@@ -30,4 +34,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = [
         'password',
     ];
+
+    public function authentikasi(){
+        return Auth::user();
+    }
 }

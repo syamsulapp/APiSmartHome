@@ -18,5 +18,12 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'auth'], function () use ($router) {
-    $router->get('/login', 'AuthController@login');
+    $router->post('/login', 'AuthController@login');
+    $router->post('/register', 'AuthController@register');
+});
+
+$router->group(['prefix' => 'fitur', 'middleware' => 'auth'], function () use ($router) {
+    $router->get('/fitur', function () {
+        return 'halo';
+    });
 });

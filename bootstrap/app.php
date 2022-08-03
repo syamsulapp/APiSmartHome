@@ -27,6 +27,8 @@ $app->withFacades();
 
 $app->withEloquent();
 
+#add auth laravel passport
+$app->configure('auth');
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -48,6 +50,7 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
+$app->configure('auth');
 /*
 |--------------------------------------------------------------------------
 | Register Config Files
@@ -59,9 +62,7 @@ $app->singleton(
 |
 */
 
-$app->configure('auth');
 
-\Dusterio\LumenPassport\LumenPassport::routes($app, ['prefix' => 'v1/oauth']);
 
 /*
 |--------------------------------------------------------------------------
@@ -74,9 +75,9 @@ $app->configure('auth');
 |
 */
 
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
+$app->middleware([
+    App\Http\Middleware\ExampleMiddleware::class
+]);
 
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
@@ -95,9 +96,11 @@ $app->routeMiddleware([
 
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
-// $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
-// $app->register(App\Providers\EventServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\EventServiceProvider::class);
+\Dusterio\LumenPassport\LumenPassport::routes($app);
+
 
 /*
 |--------------------------------------------------------------------------

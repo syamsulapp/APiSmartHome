@@ -25,7 +25,7 @@ class AuthController extends Controller
 
     public function register(Request $register)
     {
-        $this->registerRepo->register($register);
+        return $this->registerRepo->register($register);
     }
 
     public function logout(Request $logout)
