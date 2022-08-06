@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0",
         "dusterio/lumen-passport": "^0.3.6",
+        "flipbox/lumen-generator": "^9.1",
         "laravel/lumen-framework": "^9.0"
     },
     "require-dev": {

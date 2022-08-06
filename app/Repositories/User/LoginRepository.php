@@ -2,20 +2,13 @@
 
 namespace App\Repositories\User;
 
-use App\Http\JsonBuilder\ReturnResponse;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class LoginRepository
 {
-    public function __construct(User $user, ReturnResponse $respon)
-    {
-        $this->user = $user;
-        $this->respon = $respon;
-    }
-    public function login(Request $login)
+    public function login($login, $builder, $user)
     {
         $costum_validsai = [
             'required' => ':attribute jangan di kosongkan',
@@ -27,19 +20,23 @@ class LoginRepository
         ], $costum_validsai);
 
         if ($validasi_login->fails()) {
-            $result = $this->respon->responData(['errros' => $validasi_login->errors()], 422, 'failed request');
+            $result = $builder->responData(['errors' => $validasi_login->errors()]);
         } else {
-            // jika validasi dari input login nya sudah benar , maka jalankan proses login
-
-            $credential = $login->only('username', 'password');
-            if (Auth::attempt($credential, true)) {
-                $user['user'] = Auth::guard('client')->user();
-                $user['token'] = $login->createToken('smartHome')->accessToken;
-                $result = $this->respon->responData(['user' => $user, 'message' => 'sukses login']);
+            if ($user = $user::where('username', $login->username)->first()) {
+                if (Hash::check($login->password, $user->password)) {
+                    $data = [
+                        'api_token' => base64_encode(Str::random(32))
+                    ];
+                    $user->update(['api_token' => $data['api_token']]);
+                    $result = $builder->responData(['user' => $user, 'token' => $data], 200, 'sukses login');
+                } else {
+                    $result = $builder->responData(['message' => 'password anda salah'], 422, 'failed request');
+                }
             } else {
-                $result = $this->respon->responData(['message' => 'username atau password anda salah'], 401, 'authorization');
+                $result = $builder->responData(['message' => 'username salah'], 422, 'failed request');
             }
         }
+
         return $result;
     }
 }

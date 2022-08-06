@@ -8,5 +8,6 @@ class LogoutRepository
 {
     public function logout(Request $logout)
     {
+        
     }
 }

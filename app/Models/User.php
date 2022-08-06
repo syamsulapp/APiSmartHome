@@ -23,7 +23,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'username', 'email', 'role' , 'password',
+        'name', 'username', 'email', 'role_user_idrole_user', 'password', 'api_token',
     ];
 
     /**
@@ -32,10 +32,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $hidden = [
-        'password',
+        'password', 'api_token'
     ];
-
-    public function authentikasi(){
+    
+    public function authentikasi()
+    {
         return Auth::user();
     }
 }
