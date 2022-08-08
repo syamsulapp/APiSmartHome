@@ -20,11 +20,11 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@register');
-    $router->post('/logout', 'AuthController@logout');
     $router->post('/forgot_pass', 'AuthController@forgot_pass');
     $router->post('/cek_token', 'AuthController@token');
     $router->post('/update_pass', 'AuthController@update_pass');
     $router->group(['prefix' => 'user', 'middleware' => 'client'], function () use ($router) {
+        $router->post('/logout', 'AuthController@logout');
         $router->group(['prefix' => 'profile'], function () use ($router) {
             $router->get('/', 'AuthController@profile');
             $router->post('/update', 'AuthController@update_profile');

@@ -37,7 +37,7 @@ class AuthController extends Controller
 
     public function logout(Request $logout)
     {
-        $this->logoutRepo->logout($logout);
+        return $this->logoutRepo->logout($logout, $this->user, $this->respon);
     }
 
     public function forgotPass(Request $forgot)
