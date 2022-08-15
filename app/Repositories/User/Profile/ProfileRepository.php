@@ -11,12 +11,11 @@ class ProfileRepository
     {
         $validator = Validator::make($profile->all(), [
             'id' => 'numeric',
-            'api_token' => 'required',
         ]);
         if ($validator->fails()) {
             $result = $builder->responData(['message' => $validator->errors()], 422, 'failed request');
         } else {
-            $id = $user::where('api_token', $profile->api_token)->first();
+            $id = $user->authentikasi();
             if ($profile->id == null) {
                 $profile = [
                     'nama' => $id->name,
@@ -25,10 +24,10 @@ class ProfileRepository
                 ];
                 $result = $builder->responData($profile);
             } else {
-                if ($profile->id == $id->id) {
-                    $result = $builder->responData($id);
+                if ($profile->id != $id->id) {
+                    $result = $builder->responData(['message' => 'id tidak sesuai']);
                 } else {
-                    $result = $builder->responData(['message' => 'id tidak sesuai'], 422, 'failed request');
+                    $result = $builder->responData($id);
                 }
             }
         }

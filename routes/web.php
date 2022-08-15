@@ -2,6 +2,9 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Models\User;
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -26,8 +29,14 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->group(['prefix' => 'user', 'middleware' => 'client'], function () use ($router) {
         $router->post('/logout', 'AuthController@logout');
         $router->group(['prefix' => 'profile'], function () use ($router) {
-            $router->get('/', 'AuthController@profile');
+            $router->post('/', 'AuthController@profile');
             $router->post('/update', 'AuthController@update_profile');
         });
+    });
+});
+
+$router->group(['prefix' => 'fitur'], function () use ($router) {
+    $router->get('/devices', function (Request $request) {
+        #code
     });
 });

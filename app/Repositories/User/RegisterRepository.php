@@ -21,7 +21,7 @@ class RegisterRepository
             'password' => 'required',
             'confirm_password' => 'required|same:password',
             'email' => 'required|email|unique:table_users',
-        ],$costum);
+        ], $costum);
 
         if ($validasi->fails()) {
             $result = $builder->responData(['errors' => $validasi->errors()], 422, 'failed request');
