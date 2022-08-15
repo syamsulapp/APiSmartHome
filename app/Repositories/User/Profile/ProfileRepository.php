@@ -42,12 +42,11 @@ class ProfileRepository
             'username' => 'string|min:4',
             'password' => 'min:8',
             'email' => 'email',
-            'api_token' => 'required',
         ]);
         if ($validator->fails()) {
             $result = $builder->responData(['message' => $validator->errors()], 422, 'failed request');
         } else {
-            $id = $user::where('api_token', $update_profile->api_token)->first();
+            $id = $user->authentikasi();
             if ($update_profile->id == $id->id) {
                 $user::where('id', $update_profile->id)
                     ->update([

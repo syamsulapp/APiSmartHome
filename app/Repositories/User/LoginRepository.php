@@ -20,7 +20,7 @@ class LoginRepository
         ], $costum_validsai);
 
         if ($validasi_login->fails()) {
-            $result = $builder->responData(['errors' => $validasi_login->errors()]);
+            $result = $builder->responData(['errors' => $validasi_login->errors()], 422, 'failed request');
         } else {
             if ($user = $user::where('username', $login->username)->first()) {
                 if (Hash::check($login->password, $user->password)) {

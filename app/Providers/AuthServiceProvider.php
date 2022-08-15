@@ -35,19 +35,19 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
         LumenPassport::routes($this->app);
         $this->app['auth']->viaRequest('api', function (Request $request) {
-            $builder = new ReturnResponse();
-            if ($token = $request->header('IOT_API_TOKEN')) {
+            $this->builder = new ReturnResponse;
+            if ($request->header('IOT_API_TOKEN')) {
                 try {
                     $data['IOT_API_TOKEN'] = $request->header('IOT_API_TOKEN');
                     $data['IOT_PLATFORM'] = $request->header('IOT_PLATFORM');
                     $data['IOT_SERVICE_VERSION'] = $request->header('IOT_SERVICE_VERSION');
                     if ($data['IOT_PLATFORM'] == 'mobile' && $data['IOT_SERVICE_VERSION'] == '01') {
-                        $result = User::where('api_token', $token)->first();
+                        $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
                     } else {
-                        $result = $builder->responData(['message' => 'input header failed'], 426, 'header invalid');
+                        $result = $this->builder->responData(['message' => 'input header failed'], 426, 'header invalid');
                     }
                 } catch (Exception $e) {
-                    $result = $builder->responData($e, 426, 'failed HEADER REQUEST');
+                    $result = $this->builder->responData($e, 426, 'failed HEADER REQUEST');
                 }
                 return $result;
             }
