@@ -2,5 +2,7 @@
 /.idea
 Homestead.json
 Homestead.yaml
+SmarthomeSkripsiku.mwb
+SmarthomeSkripsiku.mwb.bak
 .env
 .phpunit.result.cache
