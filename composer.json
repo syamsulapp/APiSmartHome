@@ -8,7 +8,11 @@
         "php": "^8.0",
         "dusterio/lumen-passport": "^0.3.6",
         "flipbox/lumen-generator": "^9.1",
-        "laravel/lumen-framework": "^9.0"
+        "guzzlehttp/guzzle": "^7.4",
+        "illuminate/mail": "^9.24",
+        "illuminate/notifications": "^9.24",
+        "laravel/lumen-framework": "^9.0",
+        "ramsey/uuid": "^4.4"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

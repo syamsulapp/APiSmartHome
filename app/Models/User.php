@@ -11,9 +11,15 @@ use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Lumen\Auth\Authorizable;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+/** add class for service reset password */
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+
+class User extends Model implements CanResetPasswordContract, AuthenticatableContract, AuthorizableContract
 {
-    use HasApiTokens, Authenticatable, Authorizable, HasFactory;
+    use CanResetPassword, Notifiable, HasApiTokens, Authenticatable, Authorizable, HasFactory;
 
     protected $table = 'table_users';
 
@@ -32,9 +38,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $hidden = [
-        'password', 'api_token'
+        'password', 'api_token', 'remember_token'
     ];
-    
+
     public function authentikasi()
     {
         return Auth::user();

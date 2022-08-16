@@ -35,7 +35,7 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     });
 });
 
-$router->group(['prefix' => 'fitur'], function () use ($router) {
+$router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
     $router->get('/devices', function (Request $request) {
         #code
     });
