@@ -6,6 +6,6 @@ class List_devices
 {
     public function listDevices($param)
     {
-        return $param;
+        #write code
     }
 }

@@ -23,7 +23,7 @@ class DevicesController extends Controller
 
     public function listDevices(Request $param)
     {
-        return $this->list_devices->listDevices($param->coba);
+        return $this->list_devices->listDevices($param);
     }
 
     public function detailDevices(Request $param)

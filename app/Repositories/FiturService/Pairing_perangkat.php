@@ -4,7 +4,7 @@ namespace App\Repositories\FiturService;
 
 class Pairing_perangkat
 {
-    public function pairingPerangkat($param){
-
+    public function pairingPerangkat($param)
+    {
     }
 }
