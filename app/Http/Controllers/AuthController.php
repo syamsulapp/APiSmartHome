@@ -18,7 +18,6 @@ use App\Traits\SendsPasswordResetEmails;
 
 class AuthController extends Controller
 {
-    use SendsPasswordResetEmails, ResetsPasswords;
 
     public function __construct(User $user, ReturnResponse $respon, LoginRepository $login, RegisterRepository $register, LogoutRepository $logout, ForgotPasswordRepository $forgot, ProfileRepository $profile)
     {
@@ -29,7 +28,6 @@ class AuthController extends Controller
         $this->profile = $profile;
         $this->respon = $respon;
         $this->user = $user;
-        $this->broker = 'password_resets';
     }
     public function login(Request $login)
     {

@@ -33,7 +33,7 @@ class RegisterRepository
                 'email' => $register->email,
                 'role_user_idrole_user' => 2,
             ]);
-            $result = $builder->responData(['message' => 'sukses register'], 201);
+            $result = $builder->responData(['message' => 'sukses register']);
         }
         return $result;
     }
