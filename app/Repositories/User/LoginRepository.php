@@ -28,7 +28,9 @@ class LoginRepository
                         'api_token' => base64_encode(Str::random(32))
                     ];
                     $user->update(['api_token' => $data['api_token']]);
-                    $result = $builder->responData(['user' => $user, 'token' => $data], 200, 'sukses login');
+                    $auth['user'] = $user;
+                    $auth['token'] = $data;
+                    $result = $builder->responData($auth, 200, 'Succesfully Login');
                 } else {
                     $result = $builder->responData(['message' => 'password anda salah'], 422, 'failed request');
                 }

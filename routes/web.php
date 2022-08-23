@@ -36,5 +36,5 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 });
 
 $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
-    $router->get('/allDevices', 'DevicesController@index');
+    $router->get('/allDevices', 'DevicesController@listDevices');
 });
