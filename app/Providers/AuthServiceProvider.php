@@ -2,8 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\JsonBuilder\ReturnResponse;
 use App\Models\User;
 use Dusterio\LumenPassport\LumenPassport;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -30,11 +33,23 @@ class AuthServiceProvider extends ServiceProvider
         // application. The callback which receives the incoming request instance
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
-
         LumenPassport::routes($this->app);
-        $this->app['auth']->viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+        $this->app['auth']->viaRequest('api', function (Request $request) {
+            $this->builder = new ReturnResponse;
+            if ($request->header('IOT_API_TOKEN')) {
+                try {
+                    $data['IOT_API_TOKEN'] = $request->header('IOT_API_TOKEN');
+                    $data['IOT_PLATFORM'] = $request->header('IOT_PLATFORM');
+                    $data['IOT_SERVICE_VERSION'] = $request->header('IOT_SERVICE_VERSION');
+                    if ($data['IOT_PLATFORM'] == 'mobile' && $data['IOT_SERVICE_VERSION'] == '01') {
+                        $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
+                    } else {
+                        $result = $this->builder->responData(['message' => 'input header failed'], 426, 'header invalid');
+                    }
+                } catch (Exception $e) {
+                    $result = $this->builder->responData($e, 426, 'failed HEADER REQUEST');
+                }
+                return $result;
             }
         });
     }

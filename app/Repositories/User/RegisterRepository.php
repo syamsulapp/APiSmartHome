@@ -21,7 +21,7 @@ class RegisterRepository
             'password' => 'required',
             'confirm_password' => 'required|same:password',
             'email' => 'required|email|unique:table_users',
-        ],$costum);
+        ], $costum);
 
         if ($validasi->fails()) {
             $result = $builder->responData(['errors' => $validasi->errors()], 422, 'failed request');
@@ -33,7 +33,7 @@ class RegisterRepository
                 'email' => $register->email,
                 'role_user_idrole_user' => 2,
             ]);
-            $result = $builder->responData(['message' => 'sukses register'], 201);
+            $result = $builder->responData(['message' => 'sukses register'], 200, 'Successfully Registrasi');
         }
         return $result;
     }

@@ -31,6 +31,8 @@ $app->withEloquent();
 
 #add auth laravel passport
 $app->configure('auth');
+$app->configure('mail');
+$app->configure('services');
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -105,6 +107,16 @@ $app->register(App\Providers\EventServiceProvider::class);
 $app->register(\Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 \Dusterio\LumenPassport\LumenPassport::routes($app);
 Passport::enableImplicitGrant();
+
+/*
+/ ------------------------------------------
+/ Registered service for forgot password
+/ ------------------------------------------
+*/
+
+$app->register(Illuminate\Mail\MailServiceProvider::class);
+$app->register(Illuminate\Auth\Passwords\PasswordResetServiceProvider::class);
+$app->register(Illuminate\Notifications\NotificationServiceProvider::class);
 
 
 /*

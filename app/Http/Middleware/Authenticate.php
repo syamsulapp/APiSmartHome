@@ -21,9 +21,10 @@ class Authenticate
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
-    public function __construct(Auth $auth)
+    public function __construct(Auth $auth, ReturnResponse $builder)
     {
         $this->auth = $auth;
+        $this->builder = $builder;
     }
 
     /**
@@ -36,9 +37,8 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $builder = new ReturnResponse();
         if ($this->auth->guard($guard)->guest()) {
-           return $builder->responData(['message' => 'Unauthorized (harap untuk login)'], 422 , 'failed request');
+            return $this->builder->responData(['message' => 'Unauthorized (harap untuk login)'], 401, 'Unauthorized');
         }
 
         return $next($request);
