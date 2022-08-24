@@ -4,8 +4,8 @@ namespace App\Repositories\FiturService;
 
 class List_devices
 {
-    public function listDevices($param)
+    public function listDevices($param, $model_devices)
     {
-        #write code
+        
     }
 }

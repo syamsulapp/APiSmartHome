@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Devices_models;
+use App\Models\Otomatisasi_perangkat as ModelsOtomatisasi_perangkat;
+use App\Models\Pairing_devices;
+use App\Models\Schedule_perangkat as ModelsSchedule_perangkat;
 use App\Repositories\FiturService\Detail_devices;
 use App\Repositories\FiturService\List_devices;
 use App\Repositories\FiturService\Otomatisasi_perangkat;
@@ -12,18 +16,22 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
     {
         $this->detail_devices = $detailDevices;
         $this->otomatisasi_perangkat = $otomatisasiPerangkat;
         $this->schedule_perangkat = $schedulePerangkat;
         $this->pairing_perangkat = $pairingPerangkat;
         $this->list_devices = $listDevices;
+        $this->modelDevices = $modelDevices;
+        $this->modelPairing = $pairing;
+        $this->modelSchedule = $modelSchedule;
+        $this->modelOtomatisasi = $modelOtomatisasi;
     }
 
     public function listDevices(Request $param)
     {
-        return $this->list_devices->listDevices($param);
+        return $this->list_devices->listDevices($param, $this->modelDevices);
     }
 
     public function detailDevices(Request $param)
@@ -33,16 +41,16 @@ class DevicesController extends Controller
 
     public function pairingPerangkat(Request $param)
     {
-        return $this->pairing_perangkat->pairingPerangkat($param);
+        return $this->pairing_perangkat->pairingPerangkat($param, $this->modelPairing);
     }
 
     public function schedulePerangkat(Request $param)
     {
-        return $this->schedule_perangkat->schedulePerangkat($param);
+        return $this->schedule_perangkat->schedulePerangkat($param, $this->modelSchedule);
     }
 
     public function otomatisasiPerangkat(Request $param)
     {
-        return $this->otomatisasi_perangkat->otomatisasiPerangkat($param);
+        return $this->otomatisasi_perangkat->otomatisasiPerangkat($param,$this->modelOtomatisasi);
     }
 }
