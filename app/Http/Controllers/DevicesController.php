@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\JsonBuilder\ReturnResponse;
 use App\Models\Devices_models;
 use App\Models\Otomatisasi_perangkat as ModelsOtomatisasi_perangkat;
 use App\Models\Pairing_devices;
 use App\Models\Schedule_perangkat as ModelsSchedule_perangkat;
+use App\Models\User;
 use App\Repositories\FiturService\Detail_devices;
 use App\Repositories\FiturService\List_devices;
 use App\Repositories\FiturService\Otomatisasi_perangkat;
@@ -16,7 +18,7 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
     {
         $this->detail_devices = $detailDevices;
         $this->otomatisasi_perangkat = $otomatisasiPerangkat;
@@ -27,6 +29,8 @@ class DevicesController extends Controller
         $this->modelPairing = $pairing;
         $this->modelSchedule = $modelSchedule;
         $this->modelOtomatisasi = $modelOtomatisasi;
+        $this->respon = $builder;
+        $this->user = $user;
     }
 
     public function listDevices(Request $param)
@@ -41,7 +45,7 @@ class DevicesController extends Controller
 
     public function pairingPerangkat(Request $param)
     {
-        return $this->pairing_perangkat->pairingPerangkat($param, $this->modelPairing);
+        return $this->pairing_perangkat->pairingPerangkat($param, $this->modelPairing, $this->respon, $this->user);
     }
 
     public function schedulePerangkat(Request $param)
@@ -51,6 +55,6 @@ class DevicesController extends Controller
 
     public function otomatisasiPerangkat(Request $param)
     {
-        return $this->otomatisasi_perangkat->otomatisasiPerangkat($param,$this->modelOtomatisasi);
+        return $this->otomatisasi_perangkat->otomatisasiPerangkat($param, $this->modelOtomatisasi);
     }
 }
