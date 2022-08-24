@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Validator;
 
 class Pairing_perangkat
 {
-    public function get_pairing($watt, $volt, $ampere, $key, $user, $modelPairing)
+    public function get_pairing($watt, $volt, $ampere, $key, $user, $modelPairing, $builder)
     {
         if ($watt && $volt  && $ampere && $key && $user != null) {
             $pairing['key'] = $key;
@@ -16,9 +16,20 @@ class Pairing_perangkat
             $pairing['volt'] = $volt;
             $pairing['table_users_id'] = $user->id;
 
-            $modelPairing::create($pairing);
+            $data = $modelPairing::create($pairing);
+            $pairing = $builder->responData([
+                'devices' => [
+                    'ampere' => $data['ampere'],
+                    'watt' => $data['watt'],
+                    'volt' => $data['volt'],
+                    'users' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                    ]
+                ]
+            ], 200, 'Successfully Pairing');
         } else {
-            $pairing = 'param harus di lengkapi';
+            $pairing = $builder->responData(['message' => 'param di lengkapi'], 422, 'failed request');
         }
         return $pairing;
     }
@@ -39,8 +50,7 @@ class Pairing_perangkat
             } else {
                 $user = $user->authentikasi();
                 if ($param->id == $user->id) {
-                    $data = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing);
-                    $result = $builder->responData(['devices' => $data], 200, 'Successfully Pairing');
+                    $result = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing, $builder);
                 } else {
                     $result = $builder->responData(['errors' => 'id salah'], 422, 'id salah');
                 }
