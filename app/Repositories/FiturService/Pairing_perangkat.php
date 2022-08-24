@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\Validator;
 
 class Pairing_perangkat
 {
-    public function get_pairing($watt, $volt, $ampere, $user)
+    public function get_pairing($watt, $volt, $ampere, $key, $user, $modelPairing)
     {
-        if ($watt && $volt  && $ampere  && $user != null) {
+        if ($watt && $volt  && $ampere && $key && $user != null) {
+            $pairing['key'] = $key;
             $pairing['watt']  = $watt;
-            $pairing['ampere']  = $volt;
-            $pairing['volts'] = $ampere;
-            $pairing['users'] = [
-                'id' => $user->id,
-                'nama' => $user->name,
-            ];
+            $pairing['ampere']  = $ampere;
+            $pairing['volt'] = $volt;
+            $pairing['table_users_id'] = $user->id;
+
+            $modelPairing::create($pairing);
         } else {
-            $pairing = 'tidak boleh kosong';
+            $pairing = 'param harus di lengkapi';
         }
         return $pairing;
     }
@@ -26,10 +26,12 @@ class Pairing_perangkat
     {
         try {
             $costum = [
-                'required' => ':attribute jangan di kosongkan'
+                'required' => ':attribute jangan di kosongkan',
+                'unique' => 'perangkat sudah terpairing',
             ];
             $validator = Validator::make($param->all(), [
-                'id' => 'required'
+                'id' => 'required',
+                'key' => 'unique:table_pairing,key'
             ], $costum);
 
             if ($validator->fails()) {
@@ -37,7 +39,7 @@ class Pairing_perangkat
             } else {
                 $user = $user->authentikasi();
                 if ($param->id == $user->id) {
-                    $data = $this->get_pairing($param->watt, $param->volt, $param->ampere, $user);
+                    $data = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing);
                     $result = $builder->responData(['devices' => $data], 200, 'Successfully Pairing');
                 } else {
                     $result = $builder->responData(['errors' => 'id salah'], 422, 'id salah');
