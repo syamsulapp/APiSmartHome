@@ -37,4 +37,8 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 
 $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
     $router->get('/allDevices', 'DevicesController@listDevices');
+    $router->get('/detailDevices', 'DevicesController@detailDevices');
+    $router->get('/pairingDevices', 'DevicesController@pairingPerangkat');
+    $router->get('/schedulePerangkat', 'DevicesController@schedulePerangkat');
+    $router->get('/otomatisasiPerangkat', 'DevicesController@otomatisasiPerangkat');
 });
