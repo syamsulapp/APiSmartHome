@@ -2,11 +2,20 @@
 
 namespace App\Repositories\FiturService;
 
+use App\Http\Resources\ListPairingResource;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class Pairing_perangkat
 {
+    public function listPairing($param, $modelPairing, $builder, $user)
+    {
+        $user = $user->authentikasi();
+        $modelPairing = DB::table('table_pairing')->where('table_users_id', $user->id)->get();
+        $result = $builder->responData(ListPairingResource::collection($modelPairing));
+        return $result;
+    }
     public function get_pairing($watt, $volt, $ampere, $key, $user, $modelPairing, $builder)
     {
         if ($watt && $volt  && $ampere && $key && $user != null) {

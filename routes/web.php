@@ -38,7 +38,19 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
     $router->get('/allDevices', 'DevicesController@listDevices');
     $router->get('/detailDevices', 'DevicesController@detailDevices');
+    $router->get('/listPairing', 'DevicesController@listPairing');
     $router->get('/pairingDevices', 'DevicesController@pairingPerangkat');
-    $router->get('/schedulePerangkat', 'DevicesController@schedulePerangkat');
-    $router->get('/otomatisasiPerangkat', 'DevicesController@otomatisasiPerangkat');
+    $router->group(['prefix' => 'master_data'], function () use ($router) {
+        $router->group(['prefix' => 'otomatisasiPerangkat'], function () use ($router) {
+            $router->get('/otomatisasiPerangkat', 'DevicesController@otomatisasiPerangkat');
+        });
+        $router->group(['prefix' => 'schedulePerangkat'], function () use ($router) {
+            $router->get('/schedulePerangkat', 'DevicesController@schedulePerangkat');
+        });
+        $router->group(['prefix' => 'devices'], function () use ($router) {
+            $router->post('/add', 'DevicesController@add');
+            $router->post('/update', 'DevicesController@update');
+            $router->post('/delete', 'DevicesController@delete');
+        });
+    });
 });
