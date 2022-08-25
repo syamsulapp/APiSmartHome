@@ -19,6 +19,7 @@ class Pairing_perangkat
             $data = $modelPairing::create($pairing);
             $pairing = $builder->responData([
                 'devices' => [
+                    'key' => $data['key'],
                     'ampere' => $data['ampere'],
                     'watt' => $data['watt'],
                     'volt' => $data['volt'],
