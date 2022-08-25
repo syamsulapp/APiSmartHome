@@ -21,8 +21,4 @@ class List_devices
 
         return $result;
     }
-
-    public function detailDevices()
-    {
-    }
 }
