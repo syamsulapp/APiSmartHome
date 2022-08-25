@@ -49,10 +49,11 @@ class Pairing_perangkat
             $costum = [
                 'required' => ':attribute jangan di kosongkan',
                 'unique' => 'perangkat sudah terpairing',
+                'numeric' => 'harus angka',
             ];
             $validator = Validator::make($param->all(), [
                 'id' => 'required',
-                'key' => 'unique:table_pairing,key'
+                'key' => 'unique:table_pairing,key|numeric'
             ], $costum);
 
             if ($validator->fails()) {
