@@ -2,23 +2,23 @@
 
 namespace App\Repositories\FiturService;
 
+use App\Http\Resources\listDevicesResource;
+use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class List_devices
 {
-    public function listDevices($param, $model_devices, $builder)
+    public function listDevices($param, $model_devices, $builder, $user)
     {
-        $validasi = [
-            'requried' => ':attribute jangan di kosongkan',
-            'numeric' => 'harus angka',
-        ];
-        $validator = Validator::make($param->all(), [
-            'key' => 'required|numeric'
-        ], $validasi);
-
-        if ($validator->fails()) {
-            $result = $this->builder->responData(['errors' => $validator->errors()]);
-        } else {
+        try {
+            $user = $user->authentikasi();
+            $data = DB::table('table_devices')->where('table_users_id', $user->id)->get();
+            $result = $builder->responData(listDevicesResource::collection($data));
+        } catch (Exception $error) {
+            $result = $builder->responData(['message' => 'errors sistem'], 500, $error);
         }
+
+        return $result;
     }
 }

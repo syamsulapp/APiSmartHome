@@ -11,35 +11,44 @@ class Pairing_perangkat
 {
     public function listPairing($param, $modelPairing, $builder, $user)
     {
-        $user = $user->authentikasi();
-        $modelPairing = DB::table('table_pairing')->where('table_users_id', $user->id)->get();
-        $result = $builder->responData(ListPairingResource::collection($modelPairing));
+        try {
+            $user = $user->authentikasi();
+            $modelPairing = DB::table('table_pairing')->where('table_users_id', $user->id)->get();
+            $result = $builder->responData(ListPairingResource::collection($modelPairing));
+        } catch (Exception $error) {
+            $result = $builder->responData(['message' => 'errors sistem'], 500 , $error);
+        }
+
         return $result;
     }
     public function get_pairing($watt, $volt, $ampere, $key, $user, $modelPairing, $builder)
     {
-        if ($watt && $volt  && $ampere && $key && $user != null) {
-            $pairing['key'] = $key;
-            $pairing['watt']  = $watt;
-            $pairing['ampere']  = $ampere;
-            $pairing['volt'] = $volt;
-            $pairing['table_users_id'] = $user->id;
+        try {
+            if ($watt && $volt  && $ampere && $key && $user != null) {
+                $pairing['key'] = $key;
+                $pairing['watt']  = $watt;
+                $pairing['ampere']  = $ampere;
+                $pairing['volt'] = $volt;
+                $pairing['table_users_id'] = $user->id;
 
-            $data = $modelPairing::create($pairing);
-            $pairing = $builder->responData([
-                'devices' => [
-                    'key' => $data['key'],
-                    'ampere' => $data['ampere'],
-                    'watt' => $data['watt'],
-                    'volt' => $data['volt'],
-                    'users' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
+                $data = $modelPairing::create($pairing);
+                $pairing = $builder->responData([
+                    'devices' => [
+                        'key' => $data['key'],
+                        'ampere' => $data['ampere'],
+                        'watt' => $data['watt'],
+                        'volt' => $data['volt'],
+                        'users' => [
+                            'id' => $user->id,
+                            'name' => $user->name,
+                        ]
                     ]
-                ]
-            ], 200, 'Successfully Pairing');
-        } else {
-            $pairing = $builder->responData(['message' => 'param di lengkapi'], 422, 'failed request');
+                ], 200, 'Successfully Pairing');
+            } else {
+                $pairing = $builder->responData(['message' => 'param di lengkapi'], 422, 'failed request');
+            }
+        } catch (Exception $error) {
+            $pairing = $builder->responData(['message' => 'errors sistem'], 500, $error);
         }
         return $pairing;
     }

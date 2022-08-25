@@ -32,7 +32,7 @@ class crudDevices
                     $result = $builder->responData(['message' => 'perangkat ini sudah di tambahkan'], 422, 'failed pairing');
                 }
             } else {
-                $result = $builder->responData(['message' => 'id tidak sesuai'], 422, 'failed add devices');
+                $result = $builder->responData(['message' => 'bukan perangkatmu'], 422, 'failed add devices');
             }
         }
 
