@@ -47,6 +47,12 @@ class Detail_devices
                 } catch (Exception $error) {
                     $result = $builder->responData(['message' => 'error sistem'], 500, $error);
                 }
+            } else if ($param->name) {
+                $modelDevices::where('table_pairing_key', $param->key)
+                    ->update([
+                        'name' => $param->name,
+                    ]);
+                $result = $builder->responData(['message' => 'nama perangkat di update']);
             } else {
                 $detail = $modelDevices::where('table_pairing_key', $param->key)->first();
                 $result = $builder->responData($this->formatDetail($detail, $user));

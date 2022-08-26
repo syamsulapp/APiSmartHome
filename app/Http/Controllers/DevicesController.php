@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\JsonBuilder\ReturnResponse;
 use App\Models\Devices_models;
+use App\Models\ModelsRole;
 use App\Models\Otomatisasi_perangkat as ModelsOtomatisasi_perangkat;
 use App\Models\Pairing_devices;
 use App\Models\Schedule_perangkat as ModelsSchedule_perangkat;
+use App\Models\ScheduleModels;
 use App\Models\User;
 use App\Repositories\FiturService\Detail_devices;
 use App\Repositories\FiturService\List_devices;
@@ -19,7 +21,7 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(ScheduleModels $schedule, ModelsRole $role_model, crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
     {
         $this->detail_devices = $detailDevices;
         $this->otomatisasi_perangkat = $otomatisasiPerangkat;
@@ -33,21 +35,62 @@ class DevicesController extends Controller
         $this->respon = $builder;
         $this->user = $user;
         $this->crudDevices = $crudDevices;
+        $this->role = $role_model;
+        $this->schedule = $schedule;
     }
 
-    public function add(Request $param)
+    /**
+     * begin master data API
+     * (otomatisasi perangkat, schedule perangkat, role user, devices)
+     */
+    /** method crud devices */
+    public function add_devices(Request $param)
     {
-        return $this->crudDevices->add($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
+        return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
     }
-    public function update(Request $param)
+    /** method role Users */
+    public function get_role(Request $param)
     {
-        return $this->crudDevices->update($param);
+        return $this->crudDevices->get_role($param, $this->role, $this->respon);
     }
-    public function delete(Request $param)
+    public function add_role(Request $param)
     {
-        return $this->crudDevices->delete($param);
+        return $this->crudDevices->add_role($param, $this->role, $this->respon);
+    }
+    public function update_role(Request $param)
+    {
+        return $this->crudDevices->update_role($param, $this->role, $this->respon);
+    }
+    public function delete_role(Request $param)
+    {
+        return $this->crudDevices->delete_role($param, $this->role, $this->respon);
     }
 
+    /** method schedule perangkat */
+    public function get_schedule()
+    {
+        return $this->crudDevices->get_schedule($this->schedule, $this->respon);
+    }
+    public function add_schedule(Request $param)
+    {
+        return $this->crudDevices->add_schedule($param, $this->schedule, $this->respon);
+    }
+    public function update_schedule(Request $param)
+    {
+        return $this->crudDevices->update_schedule($param, $this->schedule, $this->respon);
+    }
+    public function delete_schedule(Request $param)
+    {
+        return $this->crudDevices->delete_schedule($param, $this->schedule, $this->respon);
+    }
+
+    /** method otomatisasi perangkat */
+
+    /**
+     * END (routes api master data)
+     */
+
+    /** fitur api */
     public function listDevices(Request $param)
     {
         return $this->list_devices->listDevices($param, $this->modelDevices, $this->respon, $this->user);
