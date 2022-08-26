@@ -42,26 +42,22 @@ class DevicesController extends Controller
     {
         return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
     }
-    public function update_devices(Request $param)
-    {
-        return $this->crudDevices->update_devices($param);
-    }
-    public function delete_devices(Request $param)
-    {
-        return $this->crudDevices->delete_devices($param);
-    }
     /** method role Users */
+    public function get_role(Request $param)
+    {
+        return $this->crudDevices->get_role($param, $this->role, $this->respon);
+    }
     public function add_role(Request $param)
     {
-        return $this->crudDevices->add_role($param, $this->role);
+        return $this->crudDevices->add_role($param, $this->role, $this->respon);
     }
     public function update_role(Request $param)
     {
-        return $this->crudDevices->update_role($param, $this->role);
+        return $this->crudDevices->update_role($param, $this->role, $this->respon);
     }
     public function delete_role(Request $param)
     {
-        return $this->crudDevices->delete_role($param, $this->role);
+        return $this->crudDevices->delete_role($param, $this->role, $this->respon);
     }
 
     /** method schedule perangkat */

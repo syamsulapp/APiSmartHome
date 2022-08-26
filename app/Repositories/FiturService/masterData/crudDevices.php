@@ -39,14 +39,59 @@ class crudDevices
         return $result;
     }
 
+    /** role method crud */
+    public function get_role($modelRole, $builder)
+    {
+        return $builder->responData($modelRole::all());
+    }
+    public function add_role($param, $modelRole, $builder)
+    {
+        $Validasi = Validator::make($param->all(), [
+            'role' => 'required'
+        ]);
 
-    public function add_role($param, $modelRole)
-    {
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            $modelRole::create($param->all());
+            $result = $builder->responData(['message' => 'success add role']);
+        }
+
+        return $result;
     }
-    public function update_role($param, $modelRole)
+    public function update_role($param, $modelRole, $builder)
     {
+        $Validasi = Validator::make($param->all(), [
+            'role' => 'required',
+            'id' => 'required',
+        ]);
+
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            $modelRole::where('idrole_user', $param->id)
+                ->update([
+                    'idrole_user' => $param->id,
+                    'role' => $param->role,
+                ]);
+            $result = $builder->responData(['message' => 'success update role']);
+        }
+
+        return $result;
     }
-    public function delete_role($param, $modelRole)
+    public function delete_role($param, $modelRole, $builder)
     {
+        $Validasi = Validator::make($param->all(), [
+            'id' => 'required',
+        ]);
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            $role = $modelRole::where('idrole_user', $param->id);
+            $role->delete();
+            $result = $builder->responData(['message' => 'success delete role']);
+        }
+
+        return $result;
     }
 }

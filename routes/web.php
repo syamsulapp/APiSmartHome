@@ -47,19 +47,22 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->get('/delete_otomatisasi', 'DevicesController@delete_otomatisasi');
         });
         $router->group(['prefix' => 'schedulePerangkat'], function () use ($router) {
-            $router->get('/add_schedule', 'DevicesController@add_schedule');
-            $router->get('/update_schedule', 'DevicesController@update_schedule');
-            $router->get('/delete_schedule', 'DevicesController@delete_schedule');
+            $router->get('/list_schedule', 'DevicesController@list_schedule');
+            $router->post('/add_schedule', 'DevicesController@add_schedule');
+            $router->put('/update_schedule', 'DevicesController@update_schedule');
+            $router->delete('/delete_schedule', 'DevicesController@delete_schedule');
         });
         $router->group(['prefix' => 'devices'], function () use ($router) {
+            $router->get('/list_devices', 'DevicesController@list_devices');
             $router->post('/add_devices', 'DevicesController@add_devices');
-            $router->post('/update_devices', 'DevicesController@update_devices');
-            $router->post('/delete_devices', 'DevicesController@delete_devices');
+            $router->put('/update_devices', 'DevicesController@update_devices');
+            $router->delete('/delete_devices', 'DevicesController@delete_devices');
         });
         $router->group(['prefix' => 'role_users'], function () use ($router) {
-            $router->get('/add_role', 'DevicesController@add_role');
-            $router->get('/update_role', 'DevicesController@update_role');
-            $router->get('/delete_role', 'DevicesController@delete_role');
+            $router->get('/get_role', 'DevicesController@get_role');
+            $router->post('/add_role', 'DevicesController@add_role');
+            $router->put('/update_role', 'DevicesController@update_role');
+            $router->delete('/delete_role', 'DevicesController@delete_role');
         });
     });
 });
