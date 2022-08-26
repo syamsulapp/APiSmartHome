@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\JsonBuilder\ReturnResponse;
 use App\Models\Devices_models;
+use App\Models\ModelsRole;
 use App\Models\Otomatisasi_perangkat as ModelsOtomatisasi_perangkat;
 use App\Models\Pairing_devices;
 use App\Models\Schedule_perangkat as ModelsSchedule_perangkat;
@@ -19,7 +20,7 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(ModelsRole $role_model, crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
     {
         $this->detail_devices = $detailDevices;
         $this->otomatisasi_perangkat = $otomatisasiPerangkat;
@@ -33,6 +34,7 @@ class DevicesController extends Controller
         $this->respon = $builder;
         $this->user = $user;
         $this->crudDevices = $crudDevices;
+        $this->role = $role_model;
     }
 
     /** method crud devices */
@@ -49,7 +51,15 @@ class DevicesController extends Controller
         return $this->crudDevices->delete_devices($param);
     }
     /** method role Users */
-
+    public function add_role(Request $param)
+    {
+    }
+    public function update_role(Request $param)
+    {
+    }
+    public function delete_role(Request $param)
+    {
+    }
 
     /** method schedule perangkat */
 
