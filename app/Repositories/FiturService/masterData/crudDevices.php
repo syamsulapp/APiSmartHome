@@ -38,4 +38,15 @@ class crudDevices
 
         return $result;
     }
+
+
+    public function add_role($param, $modelRole)
+    {
+    }
+    public function update_role($param, $modelRole)
+    {
+    }
+    public function delete_role($param, $modelRole)
+    {
+    }
 }

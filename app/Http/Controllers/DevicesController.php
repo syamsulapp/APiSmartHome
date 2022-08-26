@@ -53,12 +53,15 @@ class DevicesController extends Controller
     /** method role Users */
     public function add_role(Request $param)
     {
+        return $this->crudDevices->add_role($param, $this->role);
     }
     public function update_role(Request $param)
     {
+        return $this->crudDevices->update_role($param, $this->role);
     }
     public function delete_role(Request $param)
     {
+        return $this->crudDevices->delete_role($param, $this->role);
     }
 
     /** method schedule perangkat */
