@@ -56,5 +56,10 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->post('/update_devices', 'DevicesController@update_devices');
             $router->post('/delete_devices', 'DevicesController@delete_devices');
         });
+        $router->group(['prefix' => 'role_users'], function () use ($router) {
+            $router->get('/add_role', 'DevicesController@add_role');
+            $router->get('/update_role', 'DevicesController@update_role');
+            $router->get('/delete_role', 'DevicesController@delete_role');
+        });
     });
 });
