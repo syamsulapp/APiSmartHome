@@ -53,10 +53,7 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->delete('/delete_schedule', 'DevicesController@delete_schedule');
         });
         $router->group(['prefix' => 'devices'], function () use ($router) {
-            $router->get('/list_devices', 'DevicesController@list_devices');
             $router->post('/add_devices', 'DevicesController@add_devices');
-            $router->put('/update_devices', 'DevicesController@update_devices');
-            $router->delete('/delete_devices', 'DevicesController@delete_devices');
         });
         $router->group(['prefix' => 'role_users'], function () use ($router) {
             $router->get('/get_role', 'DevicesController@get_role');
