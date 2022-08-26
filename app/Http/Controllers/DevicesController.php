@@ -37,6 +37,10 @@ class DevicesController extends Controller
         $this->role = $role_model;
     }
 
+    /**
+     * begin master data API
+     * (otomatisasi perangkat, schedule perangkat, role user, devices)
+     */
     /** method crud devices */
     public function add_devices(Request $param)
     {
@@ -65,6 +69,11 @@ class DevicesController extends Controller
 
     /** method otomatisasi perangkat */
 
+    /**
+     * END (routes api master data)
+     */
+
+    /** fitur api */
     public function listDevices(Request $param)
     {
         return $this->list_devices->listDevices($param, $this->modelDevices, $this->respon, $this->user);
