@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Validator;
 
 class crudDevices
 {
-    public function add($param, $modelPairing, $builder, $modelDevices, $user)
+    public function add_devices($param, $modelPairing, $builder, $modelDevices, $user)
     {
         $validator = Validator::make($param->all(), [
             'key' => 'required',

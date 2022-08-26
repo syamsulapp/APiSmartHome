@@ -35,17 +35,17 @@ class DevicesController extends Controller
         $this->crudDevices = $crudDevices;
     }
 
-    public function add(Request $param)
+    public function add_devices(Request $param)
     {
-        return $this->crudDevices->add($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
+        return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
     }
-    public function update(Request $param)
+    public function update_devices(Request $param)
     {
-        return $this->crudDevices->update($param);
+        return $this->crudDevices->update_devices($param);
     }
-    public function delete(Request $param)
+    public function delete_devices(Request $param)
     {
-        return $this->crudDevices->delete($param);
+        return $this->crudDevices->delete_devices($param);
     }
 
     public function listDevices(Request $param)

@@ -48,9 +48,9 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->get('/schedulePerangkat', 'DevicesController@schedulePerangkat');
         });
         $router->group(['prefix' => 'devices'], function () use ($router) {
-            $router->post('/add', 'DevicesController@add');
-            $router->post('/update', 'DevicesController@update');
-            $router->post('/delete', 'DevicesController@delete');
+            $router->post('/add_devices', 'DevicesController@add_devices');
+            $router->post('/update_devices', 'DevicesController@update_devices');
+            $router->post('/delete_devices', 'DevicesController@delete_devices');
         });
     });
 });
