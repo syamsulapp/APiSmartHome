@@ -35,6 +35,7 @@ class DevicesController extends Controller
         $this->crudDevices = $crudDevices;
     }
 
+    /** method crud devices */
     public function add_devices(Request $param)
     {
         return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
@@ -47,6 +48,13 @@ class DevicesController extends Controller
     {
         return $this->crudDevices->delete_devices($param);
     }
+    /** method role Users */
+
+
+    /** method schedule perangkat */
+
+
+    /** method otomatisasi perangkat */
 
     public function listDevices(Request $param)
     {
