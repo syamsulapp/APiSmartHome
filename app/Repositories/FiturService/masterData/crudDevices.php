@@ -38,12 +38,4 @@ class crudDevices
 
         return $result;
     }
-
-    public function update($param)
-    {
-    }
-
-    public function delete($param)
-    {
-    }
 }
