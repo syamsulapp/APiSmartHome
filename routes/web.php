@@ -42,6 +42,7 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
     $router->get('/pairingDevices', 'DevicesController@pairingPerangkat');
     $router->group(['prefix' => 'master_data'], function () use ($router) {
         $router->group(['prefix' => 'otomatisasiPerangkat'], function () use ($router) {
+            /** upcoming */
             $router->get('/add_otomatisasi', 'DevicesController@add_otomatisasi');
             $router->get('/update_otomatisasi', 'DevicesController@update_otomatisasi');
             $router->get('/delete_otomatisasi', 'DevicesController@delete_otomatisasi');
