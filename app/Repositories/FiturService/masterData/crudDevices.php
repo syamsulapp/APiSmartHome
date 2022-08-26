@@ -69,12 +69,15 @@ class crudDevices
         if ($Validasi->fails()) {
             $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
         } else {
-            $modelRole::where('idrole_user', $param->id)
-                ->update([
-                    'idrole_user' => $param->id,
-                    'role' => $param->role,
-                ]);
-            $result = $builder->responData(['message' => 'success update role']);
+            if (!$modelRole::where('idrole_user', $param->id)->first()) {
+                $result = $builder->responData(['message' => 'id tidak di temukan'], 422, 'failed request');
+            } else {
+                $modelRole::where('idrole_user', $param->id)
+                    ->update([
+                        'role' => $param->role
+                    ]);
+                $result = $builder->responData(['message' => 'success update role']);
+            }
         }
 
         return $result;
@@ -87,9 +90,13 @@ class crudDevices
         if ($Validasi->fails()) {
             $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
         } else {
-            $role = $modelRole::where('idrole_user', $param->id);
-            $role->delete();
-            $result = $builder->responData(['message' => 'success delete role']);
+            if (!$modelRole::where('idrole_user', $param->id)->first()) {
+                $result = $builder->responData(['message' => 'id tidak di temukan']);
+            } else {
+                $role = $modelRole::where('idrole_user', $param->id);
+                $role->delete();
+                $result = $builder->responData(['message' => 'success delete role']);
+            }
         }
 
         return $result;
