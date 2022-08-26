@@ -48,7 +48,7 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->get('/delete_otomatisasi', 'DevicesController@delete_otomatisasi');
         });
         $router->group(['prefix' => 'schedulePerangkat'], function () use ($router) {
-            $router->get('/list_schedule', 'DevicesController@list_schedule');
+            $router->get('/get_schedule', 'DevicesController@get_schedule');
             $router->post('/add_schedule', 'DevicesController@add_schedule');
             $router->put('/update_schedule', 'DevicesController@update_schedule');
             $router->delete('/delete_schedule', 'DevicesController@delete_schedule');

@@ -101,4 +101,69 @@ class crudDevices
 
         return $result;
     }
+    /** schedule method crud */
+    public function get_schedule($modelSchedule, $builder)
+    {
+        return $builder->responData($modelSchedule::all());
+    }
+    public function add_schedule($param, $modelSchedule, $builder)
+    {
+        $Validasi = Validator::make($param->all(), [
+            'start_at' => 'required',
+            'end_at' => 'required',
+        ]);
+
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            $modelSchedule::create($param->all());
+            $result = $builder->responData(['message' => 'success add schedule']);
+        }
+
+        return $result;
+    }
+    public function update_schedule($param, $modelSchedule, $builder)
+    {
+        $Validasi = Validator::make($param->all(), [
+            'id' => 'required',
+            'start_at' => 'required',
+            'end_at' => 'required',
+        ]);
+
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            if (!$modelSchedule::where('key_status_table_perangkat', $param->id)->first()) {
+                $result = $builder->responData(['message' => 'id tidak di temukan'], 422, 'failed request');
+            } else {
+                $modelSchedule::where('key_status_table_perangkat', $param->id)
+                    ->update([
+                        'start_at' => $param->start_at,
+                        'end_at' => $param->end_at,
+                    ]);
+                $result = $builder->responData(['message' => 'success update schedule']);
+            }
+        }
+
+        return $result;
+    }
+    public function delete_schedule($param, $modelSchedule, $builder)
+    {
+        $Validasi = Validator::make($param->all(), [
+            'id' => 'required',
+        ]);
+        if ($Validasi->fails()) {
+            $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
+        } else {
+            if (!$modelSchedule::where('key_status_table_perangkat', $param->id)->first()) {
+                $result = $builder->responData(['message' => 'id tidak di temukan']);
+            } else {
+                $role = $modelSchedule::where('key_status_table_perangkat', $param->id);
+                $role->delete();
+                $result = $builder->responData(['message' => 'success delete schedule']);
+            }
+        }
+
+        return $result;
+    }
 }
