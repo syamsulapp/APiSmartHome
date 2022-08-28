@@ -16,7 +16,7 @@ class Pairing_perangkat
             $modelPairing = DB::table('table_pairing')->where('table_users_id', $user->id)->get();
             $result = $builder->responData(ListPairingResource::collection($modelPairing));
         } catch (Exception $error) {
-            $result = $builder->responData(['message' => 'errors sistem'], 500 , $error);
+            $result = $builder->responData(['message' => 'errors sistem'], 500, $error);
         }
 
         return $result;
