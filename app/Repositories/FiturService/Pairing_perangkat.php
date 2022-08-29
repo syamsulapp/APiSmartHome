@@ -61,7 +61,6 @@ class Pairing_perangkat
                 'numeric' => 'harus angka',
             ];
             $validator = Validator::make($param->all(), [
-                'id' => 'required',
                 'key' => 'unique:table_pairing,key|numeric'
             ], $costum);
 
@@ -69,11 +68,7 @@ class Pairing_perangkat
                 $result = $builder->responData(['errros' => $validator->errors()], 422, 'failed request');
             } else {
                 $user = $user->authentikasi();
-                if ($param->id == $user->id) {
-                    $result = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing, $builder);
-                } else {
-                    $result = $builder->responData(['errors' => 'id salah'], 422, 'id salah');
-                }
+                $result = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing, $builder);
             }
         } catch (Exception $error) {
             $result = $builder->responData(['errors response'], 500, $error);
