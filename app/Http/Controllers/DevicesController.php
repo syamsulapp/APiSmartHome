@@ -49,9 +49,9 @@ class DevicesController extends Controller
         return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
     }
     /** method role Users */
-    public function get_role(Request $param)
+    public function get_role()
     {
-        return $this->crudDevices->get_role($param, $this->role, $this->respon);
+        return $this->crudDevices->get_role($this->role, $this->respon);
     }
     public function add_role(Request $param)
     {
