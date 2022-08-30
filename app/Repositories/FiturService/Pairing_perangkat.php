@@ -48,7 +48,7 @@ class Pairing_perangkat
                 $pairing = $builder->responData(['message' => 'param di lengkapi'], 422, 'failed request');
             }
         } catch (Exception $error) {
-            $pairing = $builder->responData(['message' => 'errors sistem'], 500, $error);
+            $pairing = $builder->responData(['message' => 'request header invalid'], 500, $error);
         }
         return $pairing;
     }
@@ -71,7 +71,7 @@ class Pairing_perangkat
                 $result = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing, $builder);
             }
         } catch (Exception $error) {
-            $result = $builder->responData(['errors response'], 500, $error);
+            $result = $builder->responData(['request header invalid'], 500, $error);
         }
 
         return $result;
