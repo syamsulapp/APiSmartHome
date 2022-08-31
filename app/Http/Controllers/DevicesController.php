@@ -98,7 +98,7 @@ class DevicesController extends Controller
 
     public function detailDevices(Request $param)
     {
-        return $this->detail_devices->detailDevices($param, $this->modelDevices, $this->respon, $this->user);
+        return $this->detail_devices->detailDevices($param, $this->modelDevices, $this->respon, $this->user, $this->role, $this->modelOtomatisasi, $this->modelSchedule);
     }
 
     public function pairingPerangkat(Request $param)
