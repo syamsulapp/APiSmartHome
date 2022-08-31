@@ -12,6 +12,10 @@ use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
+    /**platform sent to header is mobile  */
+    public $platform = 'mobile';
+    /** iot service version api 120 */
+    public $api_iot_service_version = 120;
     /**
      * Register any application services.
      *
@@ -41,10 +45,14 @@ class AuthServiceProvider extends ServiceProvider
                     $data['IOT_API_TOKEN'] = $request->header('IOT_API_TOKEN');
                     $data['IOT_PLATFORM'] = $request->header('IOT_PLATFORM');
                     $data['IOT_SERVICE_VERSION'] = $request->header('IOT_SERVICE_VERSION');
-                    if ($data['IOT_PLATFORM'] == 'mobile' && $data['IOT_SERVICE_VERSION'] == '01') {
-                        $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
+                    if ($data['IOT_SERVICE_VERSION'] == $this->api_iot_service_version) {
+                        if ($data['IOT_PLATFORM'] == $this->platform) {
+                            $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
+                        } else {
+                            $result = $this->builder->responData(['message' => 'platform invalid'], 426, 'header invalid');
+                        }
                     } else {
-                        $result = $this->builder->responData(['message' => 'input header failed'], 426, 'header invalid');
+                        $result = $this->builder->responData(['message' => 'service version invalid'], 422, 'failed request');
                     }
                 } catch (Exception $e) {
                     $result = $this->builder->responData($e, 426, 'failed HEADER REQUEST');

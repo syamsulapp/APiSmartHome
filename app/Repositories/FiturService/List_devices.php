@@ -16,7 +16,7 @@ class List_devices
             $data = DB::table('table_devices')->where('table_users_id', $user->id)->get();
             $result = $builder->responData(listDevicesResource::collection($data));
         } catch (Exception $error) {
-            $result = $builder->responData(['message' => 'errors sistem'], 500, $error);
+            $result = $builder->responData(['message' => 'request header invalid'], 500, $error);
         }
 
         return $result;
