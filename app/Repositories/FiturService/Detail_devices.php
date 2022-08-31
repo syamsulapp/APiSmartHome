@@ -37,7 +37,7 @@ class Detail_devices
                 'volt' => $detail->volt,
                 'ampere' => $detail->ampere,
                 'watt' => $detail->watt,
-                'table_users_id' => $user,
+                'user' => $user,
                 'status' => [
                     'perangkat' => $otomatisasi,
                     'jadwal_perangkat' => $schedule,
