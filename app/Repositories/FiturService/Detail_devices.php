@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Validator;
 
 class Detail_devices
 {
+    public $schedule = 1;
+    public $saklar = 1;
+
+
     public function formatDetail($detail, $user, $role, $otomatisasi, $schedule)
     {
         /** role && ysers */
@@ -17,6 +21,7 @@ class Detail_devices
         /** schedule && otomatisasi */
         $otomatisasi['status'] = $otomatisasiModel->status;
         $otomatisasi['keterangan'] = $otomatisasiModel->keterangan;
+        $schedule['status'] = $scheduleModel->key_status_table_perangkat;
         $schedule['start'] = $scheduleModel->start_at;
         $schedule['end'] = $scheduleModel->end_at;
         $role['id']  = $roles->idrole_user;
@@ -61,23 +66,18 @@ class Detail_devices
                 $result = $builder->responData(['errors' => $validator->errors()], 422, 'failed request');
             } else {
                 try {
-                    if ($param->saklar && $param->schedule) {
+                    if ($param->saklar || $param->schedule || $param->name) {
                         try {
                             $modelDevices::where('table_pairing_key', $param->key)
                                 ->update([
-                                    'table_status_devices_key_status_perangkat' => $param->saklar,
-                                    'table_schedule_devices_key_status_table_perangkat' => $param->schedule,
+                                    'table_status_devices_key_status_perangkat' => $param->saklar == null ? $this->saklar : $param->saklar,
+                                    'table_schedule_devices_key_status_table_perangkat' => $param->schedule == null ? $this->schedule : $param->schedule,
+                                    'name' => $param->name,
                                 ]);
-                            $result = $builder->responData(['message' => 'update status device']);
+                            $result = $builder->responData(['message' => 'update status devices']);
                         } catch (Exception $error) {
-                            $result = $builder->responData(['message' => 'error sistem'], 500, $error);
+                            $result = $builder->responData(['message' => 'error update status devices'], 500, $error);
                         }
-                    } else if ($param->name) {
-                        $modelDevices::where('table_pairing_key', $param->key)
-                            ->update([
-                                'name' => $param->name,
-                            ]);
-                        $result = $builder->responData(['message' => 'nama perangkat di update']);
                     } else {
                         $detail = $modelDevices::where('table_pairing_key', $param->key)->first();
                         $result = $builder->responData($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule));
@@ -87,7 +87,7 @@ class Detail_devices
                 }
             }
         } catch (Exception $errors) {
-            $result = $builder->responData(['message' => 'error sistem']);
+            $result = $builder->responData(['message' => 'error sistem'], 500, $errors);
         }
         return $result;
     }
