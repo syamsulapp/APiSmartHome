@@ -11,44 +11,48 @@ class Detail_devices
     public $saklar = 1;
 
 
-    public function formatDetail($detail, $user, $role, $otomatisasi, $schedule)
+    public function formatDetail($detail, $user, $role, $otomatisasi, $schedule, $builder)
     {
-        /** role && ysers */
-        $users = $user::where('id', $detail->table_users_id)->first();
-        $roles = $role::where('idrole_user', $users->role_user_idrole_user)->first();
-        $otomatisasiModel = $otomatisasi::where('key_status_perangkat', $detail->table_status_devices_key_status_perangkat)->first();
-        $scheduleModel = $schedule::where('key_status_table_perangkat', $detail->table_schedule_devices_key_status_table_perangkat)->first();
-        /** schedule && otomatisasi */
-        $otomatisasi['status'] = $otomatisasiModel->status;
-        $otomatisasi['keterangan'] = $otomatisasiModel->keterangan;
-        $schedule['status'] = $scheduleModel->key_status_table_perangkat;
-        $schedule['start'] = $scheduleModel->start_at;
-        $schedule['end'] = $scheduleModel->end_at;
-        $role['id']  = $roles->idrole_user;
-        $role['role'] = $roles->role;
-        /** simpan data di array */
-        $user = array(
-            'id' => $users->id,
-            'nama' => $users->name,
-            'username' => $users->username,
-            'email' => $users->email,
-            'role' => $role
-        );
+        try {
+            /** role && ysers */
+            $users = $user::where('id', $detail->table_users_id)->first();
+            $roles = $role::where('idrole_user', $users->role_user_idrole_user)->first();
+            $otomatisasiModel = $otomatisasi::where('key_status_perangkat', $detail->table_status_devices_key_status_perangkat)->first();
+            $scheduleModel = $schedule::where('key_status_table_perangkat', $detail->table_schedule_devices_key_status_table_perangkat)->first();
+            /** schedule && otomatisasi */
+            $otomatisasi['status'] = $otomatisasiModel->status;
+            $otomatisasi['keterangan'] = $otomatisasiModel->keterangan;
+            $schedule['status'] = $scheduleModel->key_status_table_perangkat;
+            $schedule['start'] = $scheduleModel->start_at;
+            $schedule['end'] = $scheduleModel->end_at;
+            $role['id']  = $roles->idrole_user;
+            $role['role'] = $roles->role;
+            /** simpan data di array */
+            $user = array(
+                'id' => $users->id,
+                'nama' => $users->name,
+                'username' => $users->username,
+                'email' => $users->email,
+                'role' => $role
+            );
 
-        $data = [
-            'devices' => [
-                'table_pairing_key' => $detail->table_pairing_key,
-                'name' => $detail->name,
-                'volt' => $detail->volt,
-                'ampere' => $detail->ampere,
-                'watt' => $detail->watt,
-                'user' => $user,
-                'status' => [
-                    'perangkat' => $otomatisasi,
-                    'jadwal_perangkat' => $schedule,
-                ],
-            ]
-        ];
+            $data = [
+                'devices' => [
+                    'table_pairing_key' => $detail->table_pairing_key,
+                    'name' => $detail->name,
+                    'volt' => $detail->volt,
+                    'ampere' => $detail->ampere,
+                    'watt' => $detail->watt,
+                    'user' => $user,
+                    'status' => [
+                        'perangkat' => $otomatisasi,
+                        'jadwal_perangkat' => $schedule,
+                    ],
+                ]
+            ];
+        } catch (Exception $error) {
+            $data = $builder->responData(['message' => 'errors list data'], 500, $error);
+        }
 
         return $data;
     }
@@ -80,7 +84,7 @@ class Detail_devices
                         }
                     } else {
                         $detail = $modelDevices::where('table_pairing_key', $param->key)->first();
-                        $result = $builder->responData($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule));
+                        $result = $builder->responData($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule, $builder));
                     }
                 } catch (Exception $error) {
                     $result = $builder->responData(['message' => 'request header invalid'], 500, $error);
