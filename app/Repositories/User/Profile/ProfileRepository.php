@@ -30,7 +30,7 @@ class ProfileRepository
                 if ($profile->id_users != $id->id) {
                     $result = $builder->responData(['message' => 'id tidak sesuai']);
                 } else {
-                    $result = $builder->responData($id);
+                    $result = $builder->responData(['users' => $id]);
                 }
             }
         }
