@@ -21,9 +21,12 @@ class ProfileRepository
             $id = $user->authentikasi();
             if ($profile->id_users == null) {
                 $profile = [
-                    'nama' => $id->name,
-                    'username' => $id->username,
-                    'email' => $id->email,
+                    'users' => [
+                        'id' => $id->id,
+                        'nama' => $id->name,
+                        'username' => $id->username,
+                        'email' => $id->email,
+                    ]
                 ];
                 $result = $builder->responData($profile);
             } else {
