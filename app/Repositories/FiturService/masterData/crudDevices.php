@@ -123,10 +123,13 @@ class crudDevices
     }
     public function add_schedule($param, $modelSchedule, $builder)
     {
+        $costum = [
+            'unique' => 'sudah di buat'
+        ];
         $Validasi = Validator::make($param->all(), [
-            'start_at' => 'required',
-            'end_at' => 'required',
-        ]);
+            'start_at' => 'required|unique:table_schedule_devices,start_at',
+            'end_at' => 'required|unique:table_schedule_devices,end_at',
+        ], $costum);
 
         if ($Validasi->fails()) {
             $result = $builder->responData(['errors' => $Validasi->errors()], 422, 'failed request');
