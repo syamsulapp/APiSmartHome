@@ -7,7 +7,23 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileRepository
 {
-    public function profile($profile, $user, $builder)
+    public function allProfile($id, $role)
+    {
+        $data = $role::where('idrole_user', $id->role_user_idrole_user)->first();
+        $role['id'] = $data->idrole_user;
+        $role['role'] = $data->role;
+        $userAll = array(
+            'id' => $id->id,
+            'name' => $id->name,
+            'username' => $id->username,
+            'email' => $id->email,
+            'created_at' => $id->created_at,
+            'updated_at' => $id->updated_at,
+            'role' => $role,
+        );
+        return $userAll;
+    }
+    public function profile($profile, $user, $builder, $role)
     {
         $custom = [
             'required' => ':attribute jangan di kosongkan',
@@ -33,7 +49,7 @@ class ProfileRepository
                 if ($profile->id_users != $id->id) {
                     $result = $builder->responData(['message' => 'id tidak sesuai']);
                 } else {
-                    $result = $builder->responData(['users' => $id]);
+                    $result = $builder->responData($this->allProfile($id, $role));
                 }
             }
         }
