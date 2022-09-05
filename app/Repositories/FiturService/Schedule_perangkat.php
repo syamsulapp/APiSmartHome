@@ -3,6 +3,7 @@
 
 namespace App\Repositories\FiturService;
 
+use App\Libraries\smarthomeLib;
 use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Validator;
@@ -29,8 +30,16 @@ class Schedule_perangkat
                     } else {
                         $modelJadwal = $modelSchedule::where('key_status_table_perangkat', $devicesSchedule->table_schedule_devices_key_status_table_perangkat)->first();
                         if ($date->format('H:i:s') >= $modelJadwal->start_at && $date->format('H:i:s') <= $modelJadwal->end_at) {
-                            $result = $builder->responData(['message' => 'perangkat menyala']);
+                            $modelDevices::where('table_pairing_key', $param->key)
+                                ->update([
+                                    'table_status_devices_key_status_perangkat' => smarthomeLib::$saklar_on
+                                ]);
+                            $result = $builder->responData(['message' => 'perangkat on']);
                         } else {
+                            $modelDevices::where('table_pairing_key', $param->key)
+                                ->update([
+                                    'table_status_devices_key_status_perangkat' => smarthomeLib::$saklar_off
+                                ]);
                             $result = $builder->responData(['message' => 'perangkat off']);
                         }
                     }
