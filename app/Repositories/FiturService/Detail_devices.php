@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Validator;
 
 class Detail_devices
 {
-    public $schedule = 1;
-    public $saklar = 1;
-
-
     public function formatDetail($detail, $user, $role, $otomatisasi, $schedule, $builder)
     {
         try {
@@ -80,8 +76,8 @@ class Detail_devices
                             } else {
                                 $modelDevices::where('table_pairing_key', $param->key)
                                     ->update([
-                                        'table_status_devices_key_status_perangkat' => $param->saklar == null ? $this->saklar : $param->saklar,
-                                        'table_schedule_devices_key_status_table_perangkat' => $param->schedule == null ? $this->schedule : $param->schedule,
+                                        'table_status_devices_key_status_perangkat' => $param->saklar,
+                                        'table_schedule_devices_key_status_table_perangkat' => $param->schedule,
                                         'name' => $param->name,
                                     ]);
                                 $result = $builder->responData(['message' => 'update status devices']);
