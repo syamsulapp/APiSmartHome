@@ -28,12 +28,11 @@ class Schedule_perangkat
                         $result = $builder->responData(['message' => 'key tidak di temukan'], 422, 'failed request');
                     } else {
                         $modelJadwal = $modelSchedule::where('key_status_table_perangkat', $devicesSchedule->table_schedule_devices_key_status_table_perangkat)->first();
-                        // if ($modelJadwal->start_at >= $date->format('H:i:s') && $modelJadwal <= $date->format('H:i:s')) {
-                        //     $result = $builder->responData(['message' => 'perangkat menyala']);
-                        // } else {
-                        //     $result = $builder->responData(['message' => 'perangkat off']);
-                        // }
-                        return $date->format('H:i:s');
+                        if ($date->format('H:i:s') >= $modelJadwal->start_at && $date->format('H:i:s') <= $modelJadwal->end_at) {
+                            $result = $builder->responData(['message' => 'perangkat menyala']);
+                        } else {
+                            $result = $builder->responData(['message' => 'perangkat off']);
+                        }
                     }
                 }
             } catch (Exception $error) {
