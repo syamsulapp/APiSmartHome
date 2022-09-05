@@ -13,13 +13,15 @@ class ProfileRepository
         $role['id'] = $data->idrole_user;
         $role['role'] = $data->role;
         $userAll = array(
-            'id' => $id->id,
-            'name' => $id->name,
-            'username' => $id->username,
-            'email' => $id->email,
-            'created_at' => $id->created_at,
-            'updated_at' => $id->updated_at,
-            'role' => $role,
+            'users' => [
+                'id' => $id->id,
+                'name' => $id->name,
+                'username' => $id->username,
+                'email' => $id->email,
+                'created_at' => $id->created_at,
+                'updated_at' => $id->updated_at,
+                'role' => $role,
+            ]
         );
         return $userAll;
     }
