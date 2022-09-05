@@ -113,7 +113,7 @@ class DevicesController extends Controller
 
     public function schedulePerangkat(Request $param)
     {
-        return $this->schedule_perangkat->schedulePerangkat($param, $this->user, $this->respon, $this->modelDevices);
+        return $this->schedule_perangkat->schedulePerangkat($param, $this->user, $this->respon, $this->modelDevices, $this->modelSchedule);
     }
 
     public function otomatisasiPerangkat(Request $param)

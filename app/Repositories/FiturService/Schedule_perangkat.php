@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class Schedule_perangkat
 {
-    public function schedulePerangkat($param, $user, $builder, $modelDevices)
+    public function schedulePerangkat($param, $user, $builder, $modelDevices, $modelSchedule)
     {
         try {
+            $date = new DateTime();
             $costum = [
                 'required' => ':attribute jangan di kosongkan'
             ];
@@ -23,10 +24,17 @@ class Schedule_perangkat
                     $result = $builder->responData(['errors' => $validasi->errors()], 422, 'failed request');
                 } else {
                     $user = $user->authentikasi();
-                    $devicesSchedule = $modelDevices::where('table_pairing_key', $user->id)->first();
-                    $result = $devicesSchedule;
-                    // $date = new DateTime();
-                    // $result = $builder->responData($date->format('H:i:s'));
+                    if (!$devicesSchedule = $modelDevices::where('table_pairing_key', $param->key)->first()) {
+                        $result = $builder->responData(['message' => 'key tidak di temukan'], 422, 'failed request');
+                    } else {
+                        $modelJadwal = $modelSchedule::where('key_status_table_perangkat', $devicesSchedule->table_schedule_devices_key_status_table_perangkat)->first();
+                        // if ($modelJadwal->start_at >= $date->format('H:i:s') && $modelJadwal <= $date->format('H:i:s')) {
+                        //     $result = $builder->responData(['message' => 'perangkat menyala']);
+                        // } else {
+                        //     $result = $builder->responData(['message' => 'perangkat off']);
+                        // }
+                        return $date->format('H:i:s');
+                    }
                 }
             } catch (Exception $error) {
                 $result = $builder->responData(['message' => 'errors siste'], 500, $error);

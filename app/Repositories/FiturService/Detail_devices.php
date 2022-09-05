@@ -72,13 +72,20 @@ class Detail_devices
                 try {
                     if ($param->saklar || $param->schedule || $param->name) {
                         try {
-                            $modelDevices::where('table_pairing_key', $param->key)
-                                ->update([
-                                    'table_status_devices_key_status_perangkat' => $param->saklar == null ? $this->saklar : $param->saklar,
-                                    'table_schedule_devices_key_status_table_perangkat' => $param->schedule == null ? $this->schedule : $param->schedule,
-                                    'name' => $param->name,
-                                ]);
-                            $result = $builder->responData(['message' => 'update status devices']);
+                            if (
+                                !$schedule::where('key_status_table_perangkat', $param->schedule)->first() ||
+                                !$otomatisasi::where('key_status_perangkat', $param->saklar)->first()
+                            ) {
+                                $result = $builder->responData(['message' => 'id schedule dan id otomatisasi tidak di temukan']);
+                            } else {
+                                $modelDevices::where('table_pairing_key', $param->key)
+                                    ->update([
+                                        'table_status_devices_key_status_perangkat' => $param->saklar == null ? $this->saklar : $param->saklar,
+                                        'table_schedule_devices_key_status_table_perangkat' => $param->schedule == null ? $this->schedule : $param->schedule,
+                                        'name' => $param->name,
+                                    ]);
+                                $result = $builder->responData(['message' => 'update status devices']);
+                            }
                         } catch (Exception $error) {
                             $result = $builder->responData(['message' => 'error update status devices'], 500, $error);
                         }
