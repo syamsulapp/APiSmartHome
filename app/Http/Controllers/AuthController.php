@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\JsonBuilder\ReturnResponse;
+use App\Models\ModelsRole;
 use App\Models\User;
 use App\Repositories\User\ForgotPasswordRepository;
 use App\Repositories\User\LoginRepository;
@@ -19,7 +20,7 @@ use App\Traits\SendsPasswordResetEmails;
 class AuthController extends Controller
 {
 
-    public function __construct(User $user, ReturnResponse $respon, LoginRepository $login, RegisterRepository $register, LogoutRepository $logout, ForgotPasswordRepository $forgot, ProfileRepository $profile)
+    public function __construct(User $user, ModelsRole $role, ReturnResponse $respon, LoginRepository $login, RegisterRepository $register, LogoutRepository $logout, ForgotPasswordRepository $forgot, ProfileRepository $profile)
     {
         $this->loginRepo = $login;
         $this->registerRepo = $register;
@@ -28,6 +29,7 @@ class AuthController extends Controller
         $this->profile = $profile;
         $this->respon = $respon;
         $this->user = $user;
+        $this->role = $role;
     }
     public function login(Request $login)
     {
@@ -51,7 +53,7 @@ class AuthController extends Controller
 
     public function profile(Request $profile)
     {
-        return $this->profile->profile($profile, $this->user, $this->respon);
+        return $this->profile->profile($profile, $this->user, $this->respon, $this->role);
     }
 
     public function update_profile(Request $update_profile)

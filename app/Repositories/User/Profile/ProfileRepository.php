@@ -7,7 +7,25 @@ use Illuminate\Support\Facades\Validator;
 
 class ProfileRepository
 {
-    public function profile($profile, $user, $builder)
+    public function allProfile($id, $role)
+    {
+        $data = $role::where('idrole_user', $id->role_user_idrole_user)->first();
+        $role['id'] = $data->idrole_user;
+        $role['role'] = $data->role;
+        $userAll = array(
+            'users' => [
+                'id' => $id->id,
+                'name' => $id->name,
+                'username' => $id->username,
+                'email' => $id->email,
+                'created_at' => $id->created_at,
+                'updated_at' => $id->updated_at,
+                'role' => $role,
+            ]
+        );
+        return $userAll;
+    }
+    public function profile($profile, $user, $builder, $role)
     {
         $custom = [
             'required' => ':attribute jangan di kosongkan',
@@ -21,16 +39,19 @@ class ProfileRepository
             $id = $user->authentikasi();
             if ($profile->id_users == null) {
                 $profile = [
-                    'nama' => $id->name,
-                    'username' => $id->username,
-                    'email' => $id->email,
+                    'users' => [
+                        'id' => $id->id,
+                        'nama' => $id->name,
+                        'username' => $id->username,
+                        'email' => $id->email,
+                    ]
                 ];
                 $result = $builder->responData($profile);
             } else {
                 if ($profile->id_users != $id->id) {
                     $result = $builder->responData(['message' => 'id tidak sesuai']);
                 } else {
-                    $result = $builder->responData($id);
+                    $result = $builder->responData($this->allProfile($id, $role));
                 }
             }
         }
