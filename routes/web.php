@@ -42,6 +42,9 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
     $router->get('/detailDevices', 'DevicesController@detailDevices');
     $router->get('/listPairing', 'DevicesController@listPairing');
     $router->get('/pairingDevices', 'DevicesController@pairingPerangkat');
+    $router->group(['prefix' => 'user'], function () use ($router) {
+        $router->post('/scheduleDevices', 'DevicesController@schedulePerangkat');
+    });
     $router->group(['prefix' => 'master_data'], function () use ($router) {
         $router->group(['prefix' => 'otomatisasiPerangkat'], function () use ($router) {
             /** upcoming */
