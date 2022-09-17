@@ -38,10 +38,10 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 });
 
 $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
-    $router->get('/allDevices', 'DevicesController@listDevices');
-    $router->get('/detailDevices', 'DevicesController@detailDevices');
-    $router->get('/listPairing', 'DevicesController@listPairing');
-    $router->get('/pairingDevices', 'DevicesController@pairingPerangkat');
+    $router->post('/allDevices', 'DevicesController@listDevices');
+    $router->post('/detailDevices', 'DevicesController@detailDevices');
+    $router->post('/listPairing', 'DevicesController@listPairing');
+    $router->post('/pairingDevices', 'DevicesController@pairingPerangkat');
     $router->group(['prefix' => 'user'], function () use ($router) {
         $router->post('/scheduleDevices', 'DevicesController@schedulePerangkat');
     });
