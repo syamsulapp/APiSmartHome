@@ -16,6 +16,7 @@ class Hemat_daya
             'watt' => 'integer',
             'ampere' => 'integer',
             'volt' => 'integer',
+            'idDevices' => 'integer'
         ], $costum);
 
         if ($validasi->fails()) {
