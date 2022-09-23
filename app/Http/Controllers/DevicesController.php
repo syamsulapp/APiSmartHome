@@ -12,6 +12,7 @@ use App\Models\Schedule_perangkat as ModelsSchedule_perangkat;
 use App\Models\ScheduleModels;
 use App\Models\User;
 use App\Repositories\FiturService\Detail_devices;
+use App\Repositories\FiturService\Hemat_daya;
 use App\Repositories\FiturService\List_devices;
 use App\Repositories\FiturService\masterData\crudDevices;
 use App\Repositories\FiturService\Otomatisasi_perangkat;
@@ -21,7 +22,7 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(ScheduleModels $schedule, ModelsRole $role_model, crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(Hemat_daya $hematDaya, ScheduleModels $schedule, ModelsRole $role_model, crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
     {
         $this->detail_devices = $detailDevices;
         $this->otomatisasi_perangkat = $otomatisasiPerangkat;
@@ -37,6 +38,7 @@ class DevicesController extends Controller
         $this->crudDevices = $crudDevices;
         $this->role = $role_model;
         $this->schedule = $schedule;
+        $this->hemat_daya = $hematDaya;
     }
 
     /**
@@ -119,5 +121,10 @@ class DevicesController extends Controller
     public function otomatisasiPerangkat(Request $param)
     {
         return $this->otomatisasi_perangkat->otomatisasiPerangkat($param, $this->modelOtomatisasi);
+    }
+
+    public function hematDaya(Request $param)
+    {
+        return $this->hemat_daya->hemat($param, $this->respon);
     }
 }
