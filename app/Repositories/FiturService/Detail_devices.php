@@ -31,7 +31,7 @@ class Detail_devices
                 'email' => $users->email,
                 'role' => $role
             );
-
+            // format balikan api detail devices
             $data = [
                 'devices' => [
                     'table_pairing_key' => $detail->table_pairing_key,
