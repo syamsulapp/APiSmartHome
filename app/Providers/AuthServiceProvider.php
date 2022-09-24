@@ -49,13 +49,13 @@ class AuthServiceProvider extends ServiceProvider
                         if ($data['IOT_PLATFORM'] == $this->platform) {
                             $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
                         } else {
-                            $result = $this->builder->responData(['message' => 'platform invalid'], 426, 'header invalid');
+                            $result = $this->builder->error422(['message' => 'platform invalid'], 'header invalid');
                         }
                     } else {
-                        $result = $this->builder->responData(['message' => 'service version invalid'], 422, 'failed request');
+                        $result = $this->builder->error422(['message' => 'service version invalid'], 'failed request');
                     }
                 } catch (Exception $e) {
-                    $result = $this->builder->responData($e, 426, 'failed HEADER REQUEST');
+                    $result = $this->builder->error422($e, 'failed HEADER REQUEST');
                 }
                 return $result;
             }
