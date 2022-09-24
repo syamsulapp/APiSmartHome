@@ -22,23 +22,23 @@ use Illuminate\Http\Request;
 
 class DevicesController extends Controller
 {
-    public function __construct(Hemat_daya $hematDaya, ScheduleModels $schedule, ModelsRole $role_model, crudDevices $crudDevices, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevices, Otomatisasi_perangkat $otomatisasiPerangkat, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkat, List_devices $listDevices)
+    public function __construct(Hemat_daya $hematDayaRepository, ScheduleModels $scheduleRepository, ModelsRole $role_model, crudDevices $crudDevicesRepository, User $user, ReturnResponse $builder, ModelsOtomatisasi_perangkat $modelOtomatisasi, ModelsSchedule_perangkat $modelSchedule, Pairing_devices $pairing, Devices_models $modelDevices, Detail_devices $detailDevicesRepository, Otomatisasi_perangkat $otomatisasiPerangkatRepository, Schedule_perangkat $schedulePerangkat, Pairing_perangkat $pairingPerangkatRepository, List_devices $listDevicesRepository)
     {
-        $this->detail_devices = $detailDevices;
-        $this->otomatisasi_perangkat = $otomatisasiPerangkat;
+        $this->detail_devices = $detailDevicesRepository;
+        $this->otomatisasi_perangkat = $otomatisasiPerangkatRepository;
         $this->schedule_perangkat = $schedulePerangkat;
-        $this->pairing_perangkat = $pairingPerangkat;
-        $this->list_devices = $listDevices;
+        $this->pairing_perangkat = $pairingPerangkatRepository;
+        $this->list_devices = $listDevicesRepository;
         $this->modelDevices = $modelDevices;
         $this->modelPairing = $pairing;
         $this->modelSchedule = $modelSchedule;
         $this->modelOtomatisasi = $modelOtomatisasi;
         $this->respon = $builder;
         $this->user = $user;
-        $this->crudDevices = $crudDevices;
+        $this->crudDevices = $crudDevicesRepository;
         $this->role = $role_model;
-        $this->schedule = $schedule;
-        $this->hemat_daya = $hematDaya;
+        $this->schedule = $scheduleRepository;
+        $this->hemat_daya = $hematDayaRepository;
     }
 
     /**
