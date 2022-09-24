@@ -22,11 +22,11 @@ class Schedule_perangkat
             ], $costum);
             try {
                 if ($validasi->fails()) {
-                    $result = $builder->responData(['errors' => $validasi->errors()], 422, 'failed request');
+                    $result = $builder->error422(['errors' => $validasi->errors()]);
                 } else {
                     $user = $user->authentikasi();
                     if (!$devicesSchedule = $modelDevices::where('table_pairing_key', $param->key)->first()) {
-                        $result = $builder->responData(['message' => 'key tidak di temukan'], 422, 'failed request');
+                        $result = $builder->error422(['message' => 'key tidak di temukan']);
                     } else {
                         $modelJadwal = $modelSchedule::where('key_status_table_perangkat', $devicesSchedule->table_schedule_devices_key_status_table_perangkat)->first();
                         if ($date->format('H:i:s') >= $modelJadwal->start_at && $date->format('H:i:s') <= $modelJadwal->end_at) {
@@ -34,21 +34,21 @@ class Schedule_perangkat
                                 ->update([
                                     'table_status_devices_key_status_perangkat' => smarthomeLib::$saklar_on
                                 ]);
-                            $result = $builder->responData(['message' => 'perangkat on']);
+                            $result = $builder->successOk(['message' => 'perangkat on']);
                         } else {
                             $modelDevices::where('table_pairing_key', $param->key)
                                 ->update([
                                     'table_status_devices_key_status_perangkat' => smarthomeLib::$saklar_off
                                 ]);
-                            $result = $builder->responData(['message' => 'perangkat off']);
+                            $result = $builder->successOk(['message' => 'perangkat off']);
                         }
                     }
                 }
             } catch (Exception $error) {
-                $result = $builder->responData(['message' => 'errors siste'], 500, $error);
+                $result = $builder->error500(['message' => 'errors sistem'], $error);
             }
         } catch (Exception $error) {
-            $result = $builder->responData(['message' => 'error validasi'], 500, $error);
+            $result = $builder->error500(['message' => 'error validasi'], $error);
         }
 
         return $result;

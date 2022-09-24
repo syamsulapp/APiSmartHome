@@ -20,7 +20,7 @@ class LoginRepository
         ], $costum_validsai);
 
         if ($validasi_login->fails()) {
-            $result = $builder->responData(['errors' => $validasi_login->errors()], 422, 'failed request');
+            $result = $builder->error422(['errors' => $validasi_login->errors()]);
         } else {
             if ($user = $user::where('username', $login->username)->first()) {
                 if (Hash::check($login->password, $user->password)) {
@@ -30,12 +30,12 @@ class LoginRepository
                     $user->update(['api_token' => $data['api_token']]);
                     $auth['user'] = $user;
                     $auth['token'] = $data;
-                    $result = $builder->responData($auth, 200, 'Succesfully Login');
+                    $result = $builder->successOk($auth, 200, 'Succesfully Login');
                 } else {
-                    $result = $builder->responData(['message' => 'password anda salah'], 422, 'failed request');
+                    $result = $builder->error422(['message' => 'password anda salah']);
                 }
             } else {
-                $result = $builder->responData(['message' => 'username salah'], 422, 'failed request');
+                $result = $builder->error422(['message' => 'username salah']);
             }
         }
 
