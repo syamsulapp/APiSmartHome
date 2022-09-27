@@ -45,7 +45,7 @@ class Authenticate
 
         foreach ($data as $key => $value) {
             if (!$request->header('IOT_API_TOKEN')) {
-                $result = $this->builder->error401(['field' => 'masukan token'], 'Authorization Null');
+                $result = $this->builder->error401(['field' => 'IOT_API_TOKEN (insert token)'], 'Masukan Token');
             } else {
                 if ($key == 'IOT_API_TOKEN') {
                     $token = $this->user->where('api_token', $value)->first();
