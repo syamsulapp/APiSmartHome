@@ -14,7 +14,7 @@ class ReturnResponse
 				];
 				break;
 			default:
-				$respon = array('message' => 'status code ini untuk 200');
+				$respon = array('message' => 'status code ini bukan untuk 200');
 				break;
 		}
 		return response()->json($respon, $statusCode);
@@ -30,7 +30,7 @@ class ReturnResponse
 				];
 				break;
 			default:
-				$respon = array('message' => 'status code ini untuk 422');
+				$respon = array('message' => 'status code bukan ini untuk 422');
 				break;
 		}
 		return response()->json($respon, $statusCode);
@@ -46,7 +46,7 @@ class ReturnResponse
 				];
 				break;
 			default:
-				$respon = array('message' => 'status code ini untuk 426');
+				$respon = array('message' => 'status code ini bukan untuk 426');
 				break;
 		}
 		return response()->json($respon, $statusCode);
@@ -61,7 +61,23 @@ class ReturnResponse
 					'data' => $data,
 				];
 			default:
-				$respon = array('message' => 'status code ini untuk 500');
+				$respon = array('message' => 'status code ini bukan untuk 500');
+				break;
+		}
+		return response()->json($respon, $statusCode);
+	}
+
+	public static function error401($data, String $message = 'Unautorized', int $statusCode = 401)
+	{
+		switch ($statusCode) {
+			case 401:
+				$respon = [
+					'Message' => $message,
+					'data' => $data,
+				];
+				break;
+			default:
+				$respon = array('message' => 'status code bukan 401');
 				break;
 		}
 		return response()->json($respon, $statusCode);
