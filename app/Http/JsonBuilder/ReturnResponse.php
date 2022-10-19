@@ -20,7 +20,7 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error422($data, String $message = 'Failed Request', int $statusCode = 422)
+	public static function error422($data, String $message = 'Uncorrectable Response', int $statusCode = 422)
 	{
 		switch ($statusCode) {
 			case 422:
@@ -67,7 +67,7 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error401($data, String $message = 'Unautorized', int $statusCode = 401)
+	public static function error401($data, String $message = 'Unauthorized', int $statusCode = 401)
 	{
 		switch ($statusCode) {
 			case 401:

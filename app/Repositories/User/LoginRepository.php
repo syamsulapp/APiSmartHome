@@ -2,11 +2,12 @@
 
 namespace App\Repositories\User;
 
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class LoginRepository
+class LoginRepository extends BaseRepository
 {
     public function login($login, $builder, $user)
     {
@@ -20,7 +21,8 @@ class LoginRepository
         ], $costum_validsai);
 
         if ($validasi_login->fails()) {
-            $result = $builder->error422(['errors' => $validasi_login->errors()]);
+            $collect = collect($validasi_login->errors());
+            $result = $this->customError($collect);
         } else {
             if ($user = $user::where('username', $login->username)->first()) {
                 if (Hash::check($login->password, $user->password)) {
