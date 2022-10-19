@@ -87,6 +87,7 @@ class Detail_devices
                         }
                     } else {
                         $detail = $modelDevices::where('table_pairing_key', $param->key)->first();
+                        //begitu jalan session cek apakah key nya berdasarkan dari session user itu atau egak : (feedback)
                         $result = $builder->successOk($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule, $builder));
                     }
                 } catch (Exception $error) {
