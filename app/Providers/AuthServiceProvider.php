@@ -40,25 +40,12 @@ class AuthServiceProvider extends ServiceProvider
         LumenPassport::routes($this->app);
         $this->app['auth']->viaRequest('api', function (Request $request) {
             $this->builder = new ReturnResponse;
-            if ($request->header('IOT_API_TOKEN')) {
-                try {
-                    $data['IOT_API_TOKEN'] = $request->header('IOT_API_TOKEN');
-                    $data['IOT_PLATFORM'] = $request->header('IOT_PLATFORM');
-                    $data['IOT_SERVICE_VERSION'] = $request->header('IOT_SERVICE_VERSION');
-                    if ($data['IOT_SERVICE_VERSION'] == $this->api_iot_service_version) {
-                        if ($data['IOT_PLATFORM'] == $this->platform) {
-                            $result = User::where('api_token', $data['IOT_API_TOKEN'])->first();
-                        } else {
-                            $result = $this->builder->responData(['message' => 'platform invalid'], 426, 'header invalid');
-                        }
-                    } else {
-                        $result = $this->builder->responData(['message' => 'service version invalid'], 422, 'failed request');
-                    }
-                } catch (Exception $e) {
-                    $result = $this->builder->responData($e, 426, 'failed HEADER REQUEST');
-                }
-                return $result;
+            try {
+                $result = User::where('api_token', $request->header('IOT_API_TOKEN'))->first();
+            } catch (Exception $error) {
+                $result = $this->builder->error401(['errors' => 'id salah'], $error);
             }
+            return $result;
         });
     }
 }

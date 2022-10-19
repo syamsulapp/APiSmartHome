@@ -16,11 +16,11 @@ class LogoutRepository
         ], $costum);
 
         if ($validator->fails()) {
-            $result = $builder->responData(['message' => $validator->errors()]);
+            $result = $builder->error422(['message' => $validator->errors()]);
         } else {
             $user = $user->authentikasi();
-            $result = $logout->id_users != $user->id ? $builder->responData(['message' => 'id tidak sesuai'], 422, 'failed request')
-                : [$user::where('id', $user->id)->update(['api_token' => null]), $builder->responData(['message' => 'berhasil logout'], 200, 'Succesfully Logout')];
+            $result = $logout->id_users != $user->id ? $builder->error422(['message' => 'id tidak sesuai'])
+                : [$user::where('id', $user->id)->update(['api_token' => null]), $builder->successOk(['message' => 'berhasil logout'], 'Succesfully Logout')];
         }
 
         return $result;

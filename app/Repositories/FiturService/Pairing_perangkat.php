@@ -14,9 +14,9 @@ class Pairing_perangkat
         try {
             $user = $user->authentikasi();
             $modelPairing = DB::table('table_pairing')->where('table_users_id', $user->id)->get();
-            $result = $builder->responData(ListPairingResource::collection($modelPairing));
+            $result = $builder->successOk(ListPairingResource::collection($modelPairing));
         } catch (Exception $error) {
-            $result = $builder->responData(['message' => 'errors sistem'], 500, $error);
+            $result = $builder->error500(['message' => 'errors sistem'], $error);
         }
 
         return $result;
@@ -45,10 +45,10 @@ class Pairing_perangkat
                     ]
                 ], 200, 'Successfully Pairing');
             } else {
-                $pairing = $builder->responData(['message' => 'param di lengkapi'], 422, 'failed request');
+                $pairing = $builder->error422(['message' => 'param di lengkapi']);
             }
         } catch (Exception $error) {
-            $pairing = $builder->responData(['message' => 'request header invalid'], 500, $error);
+            $pairing = $builder->error500(['message' => 'request header invalid'], $error);
         }
         return $pairing;
     }
@@ -65,13 +65,13 @@ class Pairing_perangkat
             ], $costum);
 
             if ($validator->fails()) {
-                $result = $builder->responData(['errros' => $validator->errors()], 422, 'failed request');
+                $result = $builder->error422(['errros' => $validator->errors()]);
             } else {
                 $user = $user->authentikasi();
                 $result = $this->get_pairing($param->watt, $param->volt, $param->ampere, $param->key, $user, $modelPairing, $builder);
             }
         } catch (Exception $error) {
-            $result = $builder->responData(['request header invalid'], 500, $error);
+            $result = $builder->error500(['request header invalid'], $error);
         }
 
         return $result;

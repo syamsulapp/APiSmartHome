@@ -47,7 +47,7 @@ class Detail_devices
                 ]
             ];
         } catch (Exception $error) {
-            $data = $builder->responData(['message' => 'errors list data'], 500, $error);
+            $data = $builder->error500(['message' => $error], $error);
         }
 
         return $data;
@@ -63,7 +63,7 @@ class Detail_devices
                 'key' => 'required|numeric'
             ], $validasi);
             if ($validator->fails()) {
-                $result = $builder->responData(['errors' => $validator->errors()], 422, 'failed request');
+                $result = $builder->error422(['errors' => $validator->errors()]);
             } else {
                 try {
                     if ($param->saklar || $param->schedule || $param->name) {
@@ -72,7 +72,7 @@ class Detail_devices
                                 !$schedule::where('key_status_table_perangkat', $param->schedule)->first() ||
                                 !$otomatisasi::where('key_status_perangkat', $param->saklar)->first()
                             ) {
-                                $result = $builder->responData(['message' => 'id schedule dan id otomatisasi tidak di temukan']);
+                                $result = $builder->successOk(['message' => 'id schedule dan id otomatisasi tidak di temukan']);
                             } else {
                                 $modelDevices::where('table_pairing_key', $param->key)
                                     ->update([
@@ -80,21 +80,22 @@ class Detail_devices
                                         'table_schedule_devices_key_status_table_perangkat' => $param->schedule,
                                         'name' => $param->name,
                                     ]);
-                                $result = $builder->responData(['message' => 'update status devices']);
+                                $result = $builder->successOk(['message' => 'update status devices']);
                             }
                         } catch (Exception $error) {
-                            $result = $builder->responData(['message' => 'error update status devices'], 500, $error);
+                            $result = $builder->error500(['message' => 'error update status devices'], $error);
                         }
                     } else {
                         $detail = $modelDevices::where('table_pairing_key', $param->key)->first();
-                        $result = $builder->responData($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule, $builder));
+                        //begitu jalan session cek apakah key nya berdasarkan dari session user itu atau egak : (feedback)
+                        $result = $builder->successOk($this->formatDetail($detail, $user, $role_users, $otomatisasi, $schedule, $builder));
                     }
                 } catch (Exception $error) {
-                    $result = $builder->responData(['message' => 'request header invalid'], 500, $error);
+                    $result = $builder->error500(['message' => $error], $error);
                 }
             }
         } catch (Exception $errors) {
-            $result = $builder->responData(['message' => 'error sistem'], 500, $errors);
+            $result = $builder->error500(['message' => $error], $error);
         }
         return $result;
     }

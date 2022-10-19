@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\JsonBuilder\ReturnResponse;
+use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
@@ -21,8 +22,9 @@ class Authenticate
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
-    public function __construct(Auth $auth, ReturnResponse $builder)
+    public function __construct(Auth $auth, ReturnResponse $builder, User $user)
     {
+        $this->user = $user;
         $this->auth = $auth;
         $this->builder = $builder;
     }
@@ -37,10 +39,24 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
-            return $this->builder->responData(['message' => 'Unauthorized (harap untuk login)'], 401, 'Unauthorized');
-        }
+        $data['IOT_API_TOKEN']  = $request->header('IOT_API_TOKEN');
+        $data['IOT_SERVICE_VERSION']  = $request->header('IOT_SERVICE_VERSION');
+        $data['IOT_PLATFORM']  = $request->header('IOT_PLATFORM');
 
-        return $next($request);
+        foreach ($data as $key => $value) {
+            if (!$request->header('IOT_API_TOKEN')) {
+                $result = $this->builder->error401(['field' => 'IOT_API_TOKEN (insert token)'], 'Masukan Token');
+            } else {
+                if ($key == 'IOT_API_TOKEN') {
+                    $token = $this->user->where('api_token', $value)->first();
+                    if (!$token) {
+                        $result = $this->builder->error401(['message' => 'token invalid']);
+                    } else {
+                        return $next($request);
+                    }
+                }
+            }
+            return $result;
+        }
     }
 }

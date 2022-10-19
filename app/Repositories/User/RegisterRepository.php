@@ -24,7 +24,7 @@ class RegisterRepository
         ], $costum);
 
         if ($validasi->fails()) {
-            $result = $builder->responData(['errors' => $validasi->errors()], 422, 'failed request');
+            $result = $builder->error422(['errors' => $validasi->errors()]);
         } else {
             $user::create([
                 'name' => $register->name,
@@ -33,7 +33,7 @@ class RegisterRepository
                 'email' => $register->email,
                 'role_user_idrole_user' => 2,
             ]);
-            $result = $builder->responData(['message' => 'sukses register'], 200, 'Successfully Registrasi');
+            $result = $builder->successOk(['message' => 'sukses register'], 'Successfully Registrasi');
         }
         return $result;
     }

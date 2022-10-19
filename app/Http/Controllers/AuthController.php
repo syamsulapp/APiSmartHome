@@ -20,13 +20,13 @@ use App\Traits\SendsPasswordResetEmails;
 class AuthController extends Controller
 {
 
-    public function __construct(User $user, ModelsRole $role, ReturnResponse $respon, LoginRepository $login, RegisterRepository $register, LogoutRepository $logout, ForgotPasswordRepository $forgot, ProfileRepository $profile)
+    public function __construct(User $user, ModelsRole $role, ReturnResponse $respon, LoginRepository $loginRepo, RegisterRepository $registerRepository, LogoutRepository $logoutRepository, ForgotPasswordRepository $forgotRepository, ProfileRepository $profileRepository)
     {
-        $this->loginRepo = $login;
-        $this->registerRepo = $register;
-        $this->logoutRepo = $logout;
-        $this->forgotPass = $forgot;
-        $this->profile = $profile;
+        $this->loginRepo = $loginRepo;
+        $this->registerRepo = $registerRepository;
+        $this->logoutRepo = $logoutRepository;
+        $this->forgotPass = $forgotRepository;
+        $this->profile = $profileRepository;
         $this->respon = $respon;
         $this->user = $user;
         $this->role = $role;

@@ -4,5 +4,6 @@ Homestead.json
 Homestead.yaml
 SmarthomeSkripsiku.mwb
 SmarthomeSkripsiku.mwb.bak
+.vscode
 .env
 .phpunit.result.cache

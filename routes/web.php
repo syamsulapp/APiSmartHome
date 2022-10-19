@@ -38,13 +38,32 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 });
 
 $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
-    $router->post('/allDevices', 'DevicesController@listDevices');
-    $router->post('/detailDevices', 'DevicesController@detailDevices');
-    $router->post('/listPairing', 'DevicesController@listPairing');
-    $router->post('/pairingDevices', 'DevicesController@pairingPerangkat');
-    $router->group(['prefix' => 'user'], function () use ($router) {
-        $router->post('/scheduleDevices', 'DevicesController@schedulePerangkat');
+
+    //devices
+    $router->group(['prefix' => 'devices'], function () use ($router) {
+        $router->post('/', 'DevicesController@listDevices');
+        $router->post('detail', 'DevicesController@detailDevices');
     });
+
+    //pairing perangkat
+    $router->group(['prefix' => 'pairing'], function () use ($router) {
+        $router->post('/', 'DevicesController@listPairing');
+        $router->post('/devices', 'DevicesController@pairingPerangkat');
+    });
+
+    //fitur user
+    $router->group(['prefix' => 'user'], function () use ($router) {
+        $router->group(['prefix' => 'schedule'], function () use ($router) {
+            $router->post('/', 'DevicesController@schedulePerangkat');
+        });
+
+        // hemat daya fitur users
+        $router->group(['prefix' => 'hematDaya'], function () use ($router) {
+            $router->post('/', 'DevicesController@hematDaya');
+        });
+    });
+
+    // master data
     $router->group(['prefix' => 'master_data'], function () use ($router) {
         $router->group(['prefix' => 'otomatisasiPerangkat'], function () use ($router) {
             /** upcoming */

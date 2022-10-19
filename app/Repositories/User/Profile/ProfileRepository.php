@@ -34,7 +34,7 @@ class ProfileRepository
             'id_users' => 'numeric',
         ], $custom);
         if ($validator->fails()) {
-            $result = $builder->responData(['message' => $validator->errors()], 422, 'failed request');
+            $result = $builder->error422(['message' => $validator->errors()]);
         } else {
             $id = $user->authentikasi();
             if ($profile->id_users == null) {
@@ -46,12 +46,12 @@ class ProfileRepository
                         'email' => $id->email,
                     ]
                 ];
-                $result = $builder->responData($profile);
+                $result = $builder->successOk($profile);
             } else {
                 if ($profile->id_users != $id->id) {
-                    $result = $builder->responData(['message' => 'id tidak sesuai']);
+                    $result = $builder->error422(['message' => 'id tidak sesuai']);
                 } else {
-                    $result = $builder->responData($this->allProfile($id, $role));
+                    $result = $builder->successOK($this->allProfile($id, $role));
                 }
             }
         }
@@ -68,7 +68,7 @@ class ProfileRepository
             'email' => 'email',
         ]);
         if ($validator->fails()) {
-            $result = $builder->responData(['message' => $validator->errors()], 422, 'failed request');
+            $result = $builder->error422(['message' => $validator->errors()]);
         } else {
             $id = $user->authentikasi();
             if ($update_profile->id_users == $id->id) {
@@ -79,9 +79,9 @@ class ProfileRepository
                         'password' => Hash::make($update_profile->password),
                         'email' => $update_profile->email,
                     ]);
-                $result = $builder->responData(['message' => 'update profile sukses'], 200, 'update profile sucessfully');
+                $result = $builder->successOk(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
             } else {
-                $result = $builder->responData(['message' => 'id tidak sesuai'], 422, 'failed request');
+                $result = $builder->error422(['message' => 'id tidak sesuai']);
             }
         }
 
