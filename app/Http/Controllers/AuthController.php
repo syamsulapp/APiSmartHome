@@ -10,12 +10,9 @@ use App\Repositories\User\LoginRepository;
 use App\Repositories\User\LogoutRepository;
 use App\Repositories\User\Profile\ProfileRepository;
 use App\Repositories\User\RegisterRepository;
-use App\Traits\ResetsPasswords;
 use Laravel\Lumen\Routing\Controller as Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-use App\Traits\SendsPasswordResetEmails;
 
 class AuthController extends Controller
 {
