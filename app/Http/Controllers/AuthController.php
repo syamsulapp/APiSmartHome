@@ -17,30 +17,28 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
 
-    public function __construct(User $user, ModelsRole $role, ReturnResponse $respon, LoginRepository $loginRepo, RegisterRepository $registerRepository, LogoutRepository $logoutRepository, ForgotPasswordRepository $forgotRepository, ProfileRepository $profileRepository)
+    public function __construct(ModelsRole $role, LoginRepository $loginRepo, RegisterRepository $registerRepository, LogoutRepository $logoutRepository, ForgotPasswordRepository $forgotRepository, ProfileRepository $profileRepository)
     {
         $this->loginRepo = $loginRepo;
         $this->registerRepo = $registerRepository;
         $this->logoutRepo = $logoutRepository;
         $this->forgotPass = $forgotRepository;
         $this->profile = $profileRepository;
-        $this->respon = $respon;
-        $this->user = $user;
         $this->role = $role;
     }
     public function login(Request $login)
     {
-        return $this->loginRepo->login($login, $this->respon, $this->user);
+        return $this->loginRepo->login($login);
     }
 
     public function register(Request $register)
     {
-        return $this->registerRepo->register($register, $this->user, $this->respon);
+        return $this->registerRepo->register($register);
     }
 
     public function logout(Request $logout)
     {
-        return $this->logoutRepo->logout($logout, $this->user, $this->respon);
+        return $this->logoutRepo->logout($logout);
     }
 
     public function forgotPass(Request $forgot)
@@ -50,11 +48,11 @@ class AuthController extends Controller
 
     public function profile(Request $profile)
     {
-        return $this->profile->profile($profile, $this->user, $this->respon, $this->role);
+        return $this->profile->profile($profile, $this->role);
     }
 
     public function update_profile(Request $update_profile)
     {
-        return $this->profile->update_profile($update_profile, $this->respon, $this->user);
+        return $this->profile->update_profile($update_profile);
     }
 }

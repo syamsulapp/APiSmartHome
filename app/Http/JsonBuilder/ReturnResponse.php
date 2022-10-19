@@ -4,12 +4,12 @@ namespace App\Http\JsonBuilder;
 
 class ReturnResponse
 {
-	public static function successOk($data, String  $message = 'SuccessFully Data', int  $statusCode = 200)
+	public static function successOk($data, String  $message, int  $statusCode = 200)
 	{
 		switch ($statusCode) {
 			case 200:
 				$respon = [
-					'message' => $message,
+					'message' => $message == '' ? 'SuccessFully Data' : $message,
 					'data' => $data,
 				];
 				break;
@@ -20,12 +20,12 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error422($data, String $message = 'Uncorrectable Response', int $statusCode = 422)
+	public static function error422($data, String $message, int $statusCode = 422)
 	{
 		switch ($statusCode) {
 			case 422:
 				$respon = [
-					'message' => $message,
+					'message' => $message == '' ? 'Uncorectable Response' : $message,
 					'data' => $data
 				];
 				break;
@@ -36,12 +36,12 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error426($data, String $message = 'Please Upgrade', int $statusCode = 426)
+	public static function error426($data, String $message, int $statusCode = 426)
 	{
 		switch ($statusCode) {
 			case 426:
 				$respon = [
-					'message' => $message,
+					'message' => $message == '' ? 'Please Upgrade' : $message,
 					'data' => $data,
 				];
 				break;
