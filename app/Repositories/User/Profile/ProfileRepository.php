@@ -2,6 +2,7 @@
 
 namespace App\Repositories\User\Profile;
 
+use App\Models\ClientKey;
 use App\Models\ModelsRole;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -16,30 +17,16 @@ class ProfileRepository extends BaseRepository
     // store user models
     protected $user;
 
-    public function __construct(ModelsRole $role, User $user)
+    //client key
+    protected $key;
+
+    public function __construct(ModelsRole $role, User $user, ClientKey $key)
     {
         $this->role = $role;
         $this->user = $user;
+        $this->key = $key;
     }
 
-    public function allProfile($id, $role)
-    {
-        $data = $role::where('idrole_user', $id->role_user_idrole_user)->first();
-        $role['id'] = $data->idrole_user;
-        $role['role'] = $data->role;
-        $userAll = array(
-            'users' => [
-                'id' => $id->id,
-                'name' => $id->name,
-                'username' => $id->username,
-                'email' => $id->email,
-                'created_at' => $id->created_at,
-                'updated_at' => $id->updated_at,
-                'role' => $role,
-            ]
-        );
-        return $userAll;
-    }
     public function profile($profile)
     {
         $custom = [
@@ -84,18 +71,22 @@ class ProfileRepository extends BaseRepository
             $result = $this->customError($collect);
         } else {
             $id = $this->user->authentikasi();
-            if ($update_profile->id_users == $id->id) {
-                $this->user::where('id', $update_profile->id_users)
-                    ->update([
-                        'name' => $update_profile->nama,
-                        'username' => $update_profile->username,
-                        'password' => Hash::make($update_profile->password),
-                        'email' => $update_profile->email,
-                    ]);
-                $result = $this->responseCode(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
-            } else {
-                $result = $this->responseCode(['message' => 'id tidak sesuai'], 'not found id', 422);
-            }
+            $result = $this->key->when($update_profile, function ($query) use ($update_profile, $id) {
+                if (!$query->where('client_key', $update_profile->header('IOT-CLIENT-KEY'))) {
+                }
+            });
+            // if ($update_profile->id_users == $id->id) {
+            //     $this->user::where('id', $update_profile->id_users)
+            //         ->update([
+            //             'name' => $update_profile->nama,
+            //             'username' => $update_profile->username,
+            //             'password' => Hash::make($update_profile->password),
+            //             'email' => $update_profile->email,
+            //         ]);
+            //     $result = $this->responseCode(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
+            // } else {
+            //     $result = $this->responseCode(['message' => 'id tidak sesuai'], 'not found id', 422);
+            // }
         }
 
         return $result;
