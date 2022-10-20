@@ -35,13 +35,10 @@ class RegisterRepository extends BaseRepository
             $collect = collect($validasi->errors());
             $result = $this->customError($collect);
         } else {
-            $data['name'] = $register->name;
-            $data['username'] = $register->username;
-            if ($data['username'] == 'bot' || $data['name'] == 'bot') {
+            if ($register->name == 'bot' || $register->username == 'bot') {
                 $result = $this->responseCode(['message' => 'di ban'], 'Banned Your name and username', 422);
             } else {
-                $data['password'] = Hash::make($register->password);
-                $data['email'] = $register->email;
+                $data = $register->only('name', 'username', 'password', 'confirm_password', 'email');
                 $data['role_user_idrole_user'] = 2;
                 $this->user::create($data);
                 $result = $this->responseCode(['User' => $data]);
