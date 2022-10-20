@@ -31,8 +31,8 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->group(['prefix' => 'user', 'middleware' => 'client'], function () use ($router) {
         $router->post('/logout', 'AuthController@logout');
         $router->group(['prefix' => 'profile'], function () use ($router) {
-            $router->post('/', 'AuthController@profile');
-            $router->post('/update', 'AuthController@update_profile');
+            $router->post('', 'AuthController@profile');
+            $router->put('', 'AuthController@update_profile');
         });
     });
 });

@@ -12,10 +12,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    /**platform sent to header is mobile  */
-    public $platform = 'mobile';
-    /** iot service version api 120 */
-    public $api_iot_service_version = 120;
     /**
      * Register any application services.
      *

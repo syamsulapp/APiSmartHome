@@ -52,12 +52,12 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error500($data, String $message = 'Error Sistem', int $statusCode = 500)
+	public static function error500($data, String $message, int $statusCode = 500)
 	{
 		switch ($statusCode) {
 			case 500:
 				$respon = [
-					'message' => $message,
+					'message' => $message == '' ? 'Error Sistem' : $message,
 					'data' => $data,
 				];
 			default:
@@ -67,12 +67,12 @@ class ReturnResponse
 		return response()->json($respon, $statusCode);
 	}
 
-	public static function error401($data, String $message = 'Unauthorized', int $statusCode = 401)
+	public static function error401($data, String $message, int $statusCode = 401)
 	{
 		switch ($statusCode) {
 			case 401:
 				$respon = [
-					'Message' => $message,
+					'Message' => $message == '' ? 'Unauthorized' : $message,
 					'data' => $data,
 				];
 				break;

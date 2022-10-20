@@ -2,9 +2,10 @@
 
 namespace App\Repositories\User;
 
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Validator;
 
-class LogoutRepository
+class LogoutRepository extends BaseRepository
 {
     public function logout($logout, $user, $builder)
     {

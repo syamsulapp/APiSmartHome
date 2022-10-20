@@ -14,7 +14,6 @@ class BaseRepository extends ReturnResponse
         $result = collect([]);
 
         foreach ($errors as $key => $value) {
-
             $custom = [
                 'message' => $value[0],
                 'field' => $key,

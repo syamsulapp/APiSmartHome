@@ -2,11 +2,26 @@
 
 namespace App\Repositories\User\Profile;
 
+use App\Models\ModelsRole;
+use App\Models\User;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class ProfileRepository
+class ProfileRepository extends BaseRepository
 {
+    // store role models
+    protected $role;
+
+    // store user models
+    protected $user;
+
+    public function __construct(ModelsRole $role, User $user)
+    {
+        $this->role = $role;
+        $this->user = $user;
+    }
+
     public function allProfile($id, $role)
     {
         $data = $role::where('idrole_user', $id->role_user_idrole_user)->first();
@@ -25,7 +40,7 @@ class ProfileRepository
         );
         return $userAll;
     }
-    public function profile($profile, $user, $builder, $role)
+    public function profile($profile)
     {
         $custom = [
             'required' => ':attribute jangan di kosongkan',
@@ -34,26 +49,29 @@ class ProfileRepository
             'id_users' => 'numeric',
         ], $custom);
         if ($validator->fails()) {
-            $result = $builder->error422(['message' => $validator->errors()]);
+            $collect = collect($validator->errors());
+            $result = $this->customError($collect);
         } else {
-            $id = $user->authentikasi();
-            if ($profile->id_users == null) {
-                $profile = [
-                    'users' => [
-                        'id' => $id->id,
-                        'nama' => $id->name,
-                        'username' => $id->username,
-                        'email' => $id->email,
-                    ]
-                ];
-                $result = $builder->successOk($profile);
-            } else {
-                if ($profile->id_users != $id->id) {
-                    $result = $builder->error422(['message' => 'id tidak sesuai']);
-                } else {
-                    $result = $builder->successOK($this->allProfile($id, $role));
-                }
-            }
+            $id = $this->user->authentikasi();
+            $result = $id;
+            // $id = $user->authentikasi();
+            // if ($profile->id_users == null) {
+            //     $profile = [
+            //         'users' => [
+            //             'id' => $id->id,
+            //             'nama' => $id->name,
+            //             'username' => $id->username,
+            //             'email' => $id->email,
+            //         ]
+            //     ];
+            //     $result = $builder->successOk($profile);
+            // } else {
+            //     if ($profile->id_users != $id->id) {
+            //         $result = $builder->error422(['message' => 'id tidak sesuai']);
+            //     } else {
+            //         $result = $builder->successOK($this->allProfile($id, $role));
+            //     }
+            // }
         }
         return $result;
     }
