@@ -44,7 +44,7 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         if ($request->header('IOT-ORIGINAL-CLIENT-KEY')) {
-            $data = $this->key->when($request, function ($query) use ($request, $next) {
+            $data = $this->key->when($request, function ($query) use ($request) {
                 $key = $request->header('IOT-ORIGINAL-CLIENT-KEY');
                 if ($key != 'true') {
                     $result = $this->builder->error422(['message' => 'invalid client key'], 'Invalid client key');

@@ -43,7 +43,7 @@ class ProfileRepository extends BaseRepository
     public function profile($profile)
     {
         $custom = [
-            'required' => ':attribute jangan di kosongkan',
+            'numeric' => 'harus angka'
         ];
         $validator = Validator::make($profile->all(), [
             'id_users' => 'numeric',
@@ -53,30 +53,24 @@ class ProfileRepository extends BaseRepository
             $result = $this->customError($collect);
         } else {
             $id = $this->user->authentikasi();
-            $result = $id;
-            // $id = $user->authentikasi();
-            // if ($profile->id_users == null) {
-            //     $profile = [
-            //         'users' => [
-            //             'id' => $id->id,
-            //             'nama' => $id->name,
-            //             'username' => $id->username,
-            //             'email' => $id->email,
-            //         ]
-            //     ];
-            //     $result = $builder->successOk($profile);
-            // } else {
-            //     if ($profile->id_users != $id->id) {
-            //         $result = $builder->error422(['message' => 'id tidak sesuai']);
-            //     } else {
-            //         $result = $builder->successOK($this->allProfile($id, $role));
-            //     }
-            // }
+            $data['id'] = $id->id;
+            $data['name'] = $id->name;
+            $data['username'] = $id->username;
+            $data['email'] = $id->email;
+            $result = $this->user->when($profile, function ($query) use ($profile, $id, $data) {
+                $detail = $query->where('id', $id->id)->first();
+                if ($profile->id_users == $detail->id) {
+                    $view_detail =  $detail;
+                } else {
+                    $view_detail = $data;
+                }
+                return $view_detail;
+            });
         }
         return $result;
     }
 
-    public function update_profile($update_profile, $builder, $user)
+    public function update_profile($update_profile)
     {
         $validator = Validator::make($update_profile->all(), [
             'id_users' => 'required|numeric',
@@ -86,20 +80,21 @@ class ProfileRepository extends BaseRepository
             'email' => 'email',
         ]);
         if ($validator->fails()) {
-            $result = $builder->error422(['message' => $validator->errors()]);
+            $collect = collect($validator->errors());
+            $result = $this->customError($collect);
         } else {
-            $id = $user->authentikasi();
+            $id = $this->user->authentikasi();
             if ($update_profile->id_users == $id->id) {
-                $user::where('id', $update_profile->id_users)
+                $this->user::where('id', $update_profile->id_users)
                     ->update([
                         'name' => $update_profile->nama,
                         'username' => $update_profile->username,
                         'password' => Hash::make($update_profile->password),
                         'email' => $update_profile->email,
                     ]);
-                $result = $builder->successOk(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
+                $result = $this->responseCode(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
             } else {
-                $result = $builder->error422(['message' => 'id tidak sesuai']);
+                $result = $this->responseCode(['message' => 'id tidak sesuai'], 'not found id', 422);
             }
         }
 
