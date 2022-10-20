@@ -48,10 +48,11 @@ class ProfileRepository extends BaseRepository
                 $detail = $query->where('id', $id->id)->first();
                 if ($profile->id_users == $detail->id) {
                     $view_detail =  $detail;
+                    $view_detail['role_user_idrole_user'] = $this->role->where('idrole_user', $view_detail->role_user_idrole_user)->first();
                 } else {
                     $view_detail = $data;
                 }
-                return $view_detail;
+                return $this->responseCode($view_detail, 'Profile Successfully Data');
             });
         }
         return $result;
@@ -60,11 +61,10 @@ class ProfileRepository extends BaseRepository
     public function update_profile($update_profile)
     {
         $validator = Validator::make($update_profile->all(), [
-            'id_users' => 'required|numeric',
-            'nama' => 'required|string',
+            'name' => 'required|string',
             'username' => 'string|min:4',
             'password' => 'min:8',
-            'email' => 'email',
+            'email' => 'email|required',
         ]);
         if ($validator->fails()) {
             $collect = collect($validator->errors());
@@ -72,21 +72,20 @@ class ProfileRepository extends BaseRepository
         } else {
             $id = $this->user->authentikasi();
             $result = $this->key->when($update_profile, function ($query) use ($update_profile, $id) {
-                if (!$query->where('client_key', $update_profile->header('IOT-CLIENT-KEY'))) {
+                $checkClientKey = $query->where('client_key', $update_profile->header('IOT-CLIENT-KEY'))->first();
+                if (!$update_profile->header('IOT-CLIENT-KEY')) {
+                    $update_data = $this->responseCode(['message' => 'Please Upgrade You App'], 'Upgrade Your App', 426);
+                } else {
+                    if (!$checkClientKey) {
+                        $update_data = $this->responseCode(['key' => $update_profile->header('IOT-CLIENT-KEY')], 'Client key wrong', 422);
+                    } else {
+                        $change_data = $update_profile->only('name', 'email');
+                        $this->user->where('id', $id->id)->update($change_data);
+                        $update_data = $this->responseCode(['user' => $change_data], 'SuccessFully Update Data');
+                    }
                 }
+                return $update_data;
             });
-            // if ($update_profile->id_users == $id->id) {
-            //     $this->user::where('id', $update_profile->id_users)
-            //         ->update([
-            //             'name' => $update_profile->nama,
-            //             'username' => $update_profile->username,
-            //             'password' => Hash::make($update_profile->password),
-            //             'email' => $update_profile->email,
-            //         ]);
-            //     $result = $this->responseCode(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
-            // } else {
-            //     $result = $this->responseCode(['message' => 'id tidak sesuai'], 'not found id', 422);
-            // }
         }
 
         return $result;
