@@ -20,14 +20,6 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => 'auth'], function () use ($router) {
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@register');
-    $router->group(['prefix' => 'forgot'], function () use ($router) {
-        $router->post('/pass', 'AuthController@forgot_pass');
-        $router->post('/update_pass', 'AuthController@update_pass');
-    });
-    $router->group(['prefix' => 'check'], function () use ($router) {
-        $router->post('/token', 'AuthController@token');
-        $router->post('/token_validate', 'AuthController@token');
-    });
     $router->group(['prefix' => 'user', 'middleware' => 'client'], function () use ($router) {
         $router->post('/logout', 'AuthController@logout');
         $router->group(['prefix' => 'profile'], function () use ($router) {
