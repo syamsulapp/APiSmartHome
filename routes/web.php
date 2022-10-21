@@ -16,20 +16,19 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
-$router->group(['prefix' => 'auth'], function () use ($router) {
-    $router->post('/login', 'AuthController@login');
-    $router->post('/register', 'AuthController@register');
-    $router->group(['prefix' => 'user', 'middleware' => 'client'], function () use ($router) {
-        $router->post('/logout', 'AuthController@logout');
-        $router->group(['prefix' => 'profile'], function () use ($router) {
-            $router->post('', 'AuthController@profile');
-            $router->put('', 'AuthController@update_profile');
+$router->group(['prefix' => 'user'], function () use ($router) {
+    $router->group(['prefix' => 'auth'], function () use ($router) {
+        $router->post('/login', 'AuthController@login');
+        $router->post('/register', 'AuthController@register');
+        $router->group(['middleware' => 'client'], function () use ($router) {
+            $router->post('/logout', 'AuthController@logout');
+            $router->group(['prefix' => 'profile'], function () use ($router) {
+                $router->post('', 'AuthController@profile');
+                $router->put('', 'AuthController@update_profile');
+            });
         });
     });
-});
 
-$router->group(['prefix' => 'user'], function () use ($router) {
 
     $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
         //devices
@@ -44,16 +43,13 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('/devices', 'DevicesController@pairingPerangkat');
         });
 
-        //fitur user
-        $router->group(['prefix' => 'user'], function () use ($router) {
-            $router->group(['prefix' => 'schedule'], function () use ($router) {
-                $router->post('/', 'DevicesController@schedulePerangkat');
-            });
+        $router->group(['prefix' => 'schedule'], function () use ($router) {
+            $router->post('/', 'DevicesController@schedulePerangkat');
+        });
 
-            // hemat daya fitur users
-            $router->group(['prefix' => 'hematDaya'], function () use ($router) {
-                $router->post('/', 'DevicesController@hematDaya');
-            });
+        // hemat daya fitur users
+        $router->group(['prefix' => 'hematDaya'], function () use ($router) {
+            $router->post('/', 'DevicesController@hematDaya');
         });
     });
 
