@@ -29,7 +29,8 @@ class WebAuthController extends Controller
         return $this->webAuth->register($register);
     }
 
-    public function logout()
+    public function logout(Request $logout)
     {
+        return $this->webAuth->logout($logout);
     }
 }

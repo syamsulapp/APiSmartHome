@@ -72,7 +72,7 @@ class WebAuthRepository extends BaseRepository
         return $result;
     }
 
-    public function logout()
+    public function logout($logout)
     {
     }
 }
