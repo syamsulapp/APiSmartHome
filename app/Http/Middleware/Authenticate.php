@@ -55,12 +55,20 @@ class Authenticate
             });
         } else {
             $data = $this->user->when($request, function ($query) use ($request, $next) {
-                if ($query->where('api_token', $request->header('IOT-API-TOKEN'))->first()) {
-                    $platform_version = $this->version->where('platform', $request->header('IOT-PLATFORM'))->first();
-                    if ($platform_version && $request->header('IOT-VERSION') == $platform_version->version) {
-                        $result = $next($request);
+                if ($request->header('IOT-API-TOKEN')) {
+                    if ($query->where('api_token', $request->header('IOT-API-TOKEN'))->first()) {
+                        $platform = $this->version->where('platform', $request->header('IOT-PLATFORM'))->first();
+                        if ($platform) {
+                            if ($request->header('IOT-VERSION') == $platform->version) {
+                                $result = $next($request);
+                            } else {
+                                $result = $this->builder->error426(['message' => 'version wrong'], 'Your version need update');
+                            }
+                        } else {
+                            $result = $this->builder->error426(['message' => 'Please Upgrade Your Version App'], 'Upgrade Your Version');
+                        }
                     } else {
-                        $result = $this->builder->error426(['message' => 'Please Upgrade Your Version App'], 'Upgrade Your Version');
+                        $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');
                     }
                 } else {
                     $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');

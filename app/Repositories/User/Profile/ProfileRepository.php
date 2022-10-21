@@ -74,7 +74,7 @@ class ProfileRepository extends BaseRepository
             $result = $this->key->when($update_profile, function ($query) use ($update_profile, $id) {
                 $checkClientKey = $query->where('client_key', $update_profile->header('IOT-CLIENT-KEY'))->first();
                 if (!$update_profile->header('IOT-CLIENT-KEY')) {
-                    $update_data = $this->responseCode(['message' => 'Please Upgrade You App'], 'Upgrade Your App', 426);
+                    $update_data = $this->responseCode(['message' => 'Please Contact Administrator'], 'Failed Request', 422);
                 } else {
                     if (!$checkClientKey) {
                         $update_data = $this->responseCode(['key' => $update_profile->header('IOT-CLIENT-KEY')], 'Client key wrong', 422);
