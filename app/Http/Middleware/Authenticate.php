@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Http\JsonBuilder\ReturnResponse;
+use App\Models\ClientKey;
+use App\Models\Platform_version;
 use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
@@ -22,11 +24,13 @@ class Authenticate
      * @param  \Illuminate\Contracts\Auth\Factory  $auth
      * @return void
      */
-    public function __construct(Auth $auth, ReturnResponse $builder, User $user)
+    public function __construct(Auth $auth, ReturnResponse $builder, User $user, Platform_version $version, ClientKey $key)
     {
         $this->user = $user;
         $this->auth = $auth;
         $this->builder = $builder;
+        $this->version = $version;
+        $this->key = $key;
     }
 
     /**
@@ -39,24 +43,39 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        $data['IOT_API_TOKEN']  = $request->header('IOT_API_TOKEN');
-        $data['IOT_SERVICE_VERSION']  = $request->header('IOT_SERVICE_VERSION');
-        $data['IOT_PLATFORM']  = $request->header('IOT_PLATFORM');
-
-        foreach ($data as $key => $value) {
-            if (!$request->header('IOT_API_TOKEN')) {
-                $result = $this->builder->error401(['field' => 'IOT_API_TOKEN (insert token)'], 'Masukan Token');
-            } else {
-                if ($key == 'IOT_API_TOKEN') {
-                    $token = $this->user->where('api_token', $value)->first();
-                    if (!$token) {
-                        $result = $this->builder->error401(['message' => 'token invalid']);
-                    } else {
-                        return $next($request);
-                    }
+        if ($request->header('IOT-ORIGINAL-CLIENT-KEY')) {
+            $data = $this->key->when($request, function ($query) use ($request) {
+                $key = $request->header('IOT-ORIGINAL-CLIENT-KEY');
+                if ($key != 'true') {
+                    $result = $this->builder->error422(['message' => 'invalid client key'], 'Invalid client key');
+                } else {
+                    $result = $query->select('client_key')->get();
                 }
-            }
-            return $result;
+                return $result;
+            });
+        } else {
+            $data = $this->user->when($request, function ($query) use ($request, $next) {
+                if ($request->header('IOT-API-TOKEN')) {
+                    if ($query->where('api_token', $request->header('IOT-API-TOKEN'))->first()) {
+                        $platform = $this->version->where('platform', $request->header('IOT-PLATFORM'))->first();
+                        if ($platform) {
+                            if ($request->header('IOT-VERSION') == $platform->version) {
+                                $result = $next($request);
+                            } else {
+                                $result = $this->builder->error426(['message' => 'version wrong'], 'Your version need update');
+                            }
+                        } else {
+                            $result = $this->builder->error426(['message' => 'Please Upgrade Your Version App'], 'Upgrade Your Version');
+                        }
+                    } else {
+                        $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');
+                    }
+                } else {
+                    $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');
+                }
+                return $result;
+            });
         }
+        return $data;
     }
 }

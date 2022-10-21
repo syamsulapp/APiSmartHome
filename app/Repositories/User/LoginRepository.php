@@ -2,13 +2,21 @@
 
 namespace App\Repositories\User;
 
+use App\Models\User;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class LoginRepository
+class LoginRepository extends BaseRepository
 {
-    public function login($login, $builder, $user)
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+    public function login($login)
     {
         $costum_validsai = [
             'required' => ':attribute jangan di kosongkan',
@@ -20,25 +28,27 @@ class LoginRepository
         ], $costum_validsai);
 
         if ($validasi_login->fails()) {
-            $result = $builder->error422(['errors' => $validasi_login->errors()]);
+            $collect = collect($validasi_login->errors());
+            return $this->customError($collect);
         } else {
-            if ($user = $user::where('username', $login->username)->first()) {
-                if (Hash::check($login->password, $user->password)) {
-                    $data = [
-                        'api_token' => base64_encode(Str::random(32))
-                    ];
-                    $user->update(['api_token' => $data['api_token']]);
-                    $auth['user'] = $user;
-                    $auth['token'] = $data;
-                    $result = $builder->successOk($auth, 200, 'Succesfully Login');
+            $data = $this->user->when($login->username, function ($query) use ($login) {
+                $user = $query->where('username', $login->username)->first();
+                if ($user) {
+                    $checkPassword = Hash::check($login->password, $user->password);
+                    if ($checkPassword) {
+                        $token = array('api_token' => base64_encode(Str::random(40)));
+                        $user->update(['api_token' => $token['api_token']]);
+                        $authSuccess = array('user' => $user, 'token' => $token);
+                        $result = $this->responseCode($authSuccess, 'SuccessFully Login');
+                    } else {
+                        $result = $this->responseCode(['message' => 'Password Salah'], 'Login Failed', 422);
+                    }
                 } else {
-                    $result = $builder->error422(['message' => 'password anda salah']);
+                    $result = $this->responseCode(['message' => 'Username Salah'], 'Login Failed', 422);
                 }
-            } else {
-                $result = $builder->error422(['message' => 'username salah']);
-            }
+                return $result;
+            });
+            return $data;
         }
-
-        return $result;
     }
 }

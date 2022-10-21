@@ -2,87 +2,90 @@
 
 namespace App\Repositories\User\Profile;
 
+use App\Models\ClientKey;
+use App\Models\ModelsRole;
+use App\Models\User;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
-class ProfileRepository
+class ProfileRepository extends BaseRepository
 {
-    public function allProfile($id, $role)
+    // store role models
+    protected $role;
+
+    // store user models
+    protected $user;
+
+    //client key
+    protected $key;
+
+    public function __construct(ModelsRole $role, User $user, ClientKey $key)
     {
-        $data = $role::where('idrole_user', $id->role_user_idrole_user)->first();
-        $role['id'] = $data->idrole_user;
-        $role['role'] = $data->role;
-        $userAll = array(
-            'users' => [
-                'id' => $id->id,
-                'name' => $id->name,
-                'username' => $id->username,
-                'email' => $id->email,
-                'created_at' => $id->created_at,
-                'updated_at' => $id->updated_at,
-                'role' => $role,
-            ]
-        );
-        return $userAll;
+        $this->role = $role;
+        $this->user = $user;
+        $this->key = $key;
     }
-    public function profile($profile, $user, $builder, $role)
+
+    public function profile($profile)
     {
         $custom = [
-            'required' => ':attribute jangan di kosongkan',
+            'numeric' => 'harus angka'
         ];
         $validator = Validator::make($profile->all(), [
             'id_users' => 'numeric',
         ], $custom);
         if ($validator->fails()) {
-            $result = $builder->error422(['message' => $validator->errors()]);
+            $collect = collect($validator->errors());
+            $result = $this->customError($collect);
         } else {
-            $id = $user->authentikasi();
-            if ($profile->id_users == null) {
-                $profile = [
-                    'users' => [
-                        'id' => $id->id,
-                        'nama' => $id->name,
-                        'username' => $id->username,
-                        'email' => $id->email,
-                    ]
-                ];
-                $result = $builder->successOk($profile);
-            } else {
-                if ($profile->id_users != $id->id) {
-                    $result = $builder->error422(['message' => 'id tidak sesuai']);
+            $id = $this->user->authentikasi();
+            $data['id'] = $id->id;
+            $data['name'] = $id->name;
+            $data['username'] = $id->username;
+            $data['email'] = $id->email;
+            $result = $this->user->when($profile, function ($query) use ($profile, $id, $data) {
+                $detail = $query->where('id', $id->id)->first();
+                if ($profile->id_users == $detail->id) {
+                    $view_detail =  $detail;
+                    $view_detail['role_user_idrole_user'] = $this->role->where('idrole_user', $view_detail->role_user_idrole_user)->first();
                 } else {
-                    $result = $builder->successOK($this->allProfile($id, $role));
+                    $view_detail = $data;
                 }
-            }
+                return $this->responseCode($view_detail, 'Profile Successfully Data');
+            });
         }
         return $result;
     }
 
-    public function update_profile($update_profile, $builder, $user)
+    public function update_profile($update_profile)
     {
         $validator = Validator::make($update_profile->all(), [
-            'id_users' => 'required|numeric',
-            'nama' => 'required|string',
+            'name' => 'required|string',
             'username' => 'string|min:4',
             'password' => 'min:8',
-            'email' => 'email',
+            'email' => 'email|required',
         ]);
         if ($validator->fails()) {
-            $result = $builder->error422(['message' => $validator->errors()]);
+            $collect = collect($validator->errors());
+            $result = $this->customError($collect);
         } else {
-            $id = $user->authentikasi();
-            if ($update_profile->id_users == $id->id) {
-                $user::where('id', $update_profile->id_users)
-                    ->update([
-                        'name' => $update_profile->nama,
-                        'username' => $update_profile->username,
-                        'password' => Hash::make($update_profile->password),
-                        'email' => $update_profile->email,
-                    ]);
-                $result = $builder->successOk(['message' => 'update profile sukses'], 'Update Profile Sucessfully');
-            } else {
-                $result = $builder->error422(['message' => 'id tidak sesuai']);
-            }
+            $id = $this->user->authentikasi();
+            $result = $this->key->when($update_profile, function ($query) use ($update_profile, $id) {
+                $checkClientKey = $query->where('client_key', $update_profile->header('IOT-CLIENT-KEY'))->first();
+                if (!$update_profile->header('IOT-CLIENT-KEY')) {
+                    $update_data = $this->responseCode(['message' => 'Please Contact Administrator'], 'Failed Request', 422);
+                } else {
+                    if (!$checkClientKey) {
+                        $update_data = $this->responseCode(['key' => $update_profile->header('IOT-CLIENT-KEY')], 'Client key wrong', 422);
+                    } else {
+                        $change_data = $update_profile->only('name', 'email');
+                        $this->user->where('id', $id->id)->update($change_data);
+                        $update_data = $this->responseCode(['user' => $change_data], 'SuccessFully Update Data');
+                    }
+                }
+                return $update_data;
+            });
         }
 
         return $result;

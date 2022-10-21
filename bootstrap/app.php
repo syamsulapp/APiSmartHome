@@ -104,7 +104,7 @@ $app->register(Dusterio\LumenPassport\PassportServiceProvider::class); */
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-// $app->register(\Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
+$app->register(\Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 // \Dusterio\LumenPassport\LumenPassport::routes($app);
 // Passport::enableImplicitGrant();
 

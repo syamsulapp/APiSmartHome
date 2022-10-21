@@ -2,12 +2,20 @@
 
 namespace App\Repositories\User;
 
+use App\Models\User;
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterRepository
+class RegisterRepository extends BaseRepository
 {
-    public function register($register, $user, $builder)
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+    public function register($register)
     {
         $costum = [
             'required' => ':attribute jangan dikosongkan',
@@ -24,16 +32,17 @@ class RegisterRepository
         ], $costum);
 
         if ($validasi->fails()) {
-            $result = $builder->error422(['errors' => $validasi->errors()]);
+            $collect = collect($validasi->errors());
+            $result = $this->customError($collect);
         } else {
-            $user::create([
-                'name' => $register->name,
-                'username' => $register->username,
-                'password' => Hash::make($register->password),
-                'email' => $register->email,
-                'role_user_idrole_user' => 2,
-            ]);
-            $result = $builder->successOk(['message' => 'sukses register'], 'Successfully Registrasi');
+            if ($register->name == 'bot' || $register->username == 'bot') {
+                $result = $this->responseCode(['message' => 'di ban'], 'Banned Your name and username', 422);
+            } else {
+                $data = $register->only('name', 'username', 'password', 'confirm_password', 'email');
+                $data['role_user_idrole_user'] = 2;
+                $this->user::create($data);
+                $result = $this->responseCode(['User' => $data]);
+            }
         }
         return $result;
     }
