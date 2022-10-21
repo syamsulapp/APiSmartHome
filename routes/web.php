@@ -79,4 +79,11 @@ $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use 
             $router->delete('/delete_role', 'DevicesController@delete_role');
         });
     });
+
+    $router->group(['prefix' => 'web', 'namespace' => 'Web'], function () use ($router) {
+        $router->group(['prefix' => 'auth', 'namespace' => 'Auth'], function () use ($router) {
+            $router->post('/login', 'WebAuthController@login');
+            $router->post('/register', 'WebAuthController@register');
+        });
+    });
 });
