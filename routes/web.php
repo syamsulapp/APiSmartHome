@@ -57,6 +57,9 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->group(['prefix' => 'auth', 'namespace' => 'Auth'], function () use ($router) {
             $router->post('/login', 'WebAuthController@login');
             $router->post('/register', 'WebAuthController@register');
+            $router->group(['prefix' => 'logout', 'middleware' => 'admin'], function () use ($router) {
+                $router->post('/', 'WebAuthController@logout');
+            });
         });
         $router->group(['prefix' => 'master'], function () use ($router) {
             $router->group(['prefix' => 'otomatisasiPerangkat'], function () use ($router) {

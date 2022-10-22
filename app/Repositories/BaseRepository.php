@@ -36,6 +36,9 @@ class BaseRepository extends ReturnResponse
             case 426:
                 $result = $this->error426($data, $message);
                 break;
+            case 401:
+                $result = $this->error401($data, $message);
+                break;
         }
         return $result;
     }
