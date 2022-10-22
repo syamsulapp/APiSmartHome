@@ -35,17 +35,21 @@ class AdminMiddleware extends BaseRepository
             $cekToken = $this->admin->where('token', $request->header('IOT-API-TOKEN'))->first();
             if ($cekToken) {
                 if ($request->header('IOT-PLATFORM') && $request->header('IOT-VERSION')) {
-                    $result = $this->version->when($request, function ($query) use ($request, $next) {
+                    $result = $this->version->when($request, function ($query) use ($request, $next, $cekToken) {
                         $checkPlatform = $query->where('platform', $request->header('IOT-PLATFORM'))->first();
-                        if ($checkPlatform->platform == 'web') {
-                            $checkVersion = $query->where('version', $checkPlatform->version)->first();
-                            if ($checkVersion->version == $request->header('IOT-VERSION')) {
+                        switch ($checkPlatform) {
+                            case $checkPlatform->platform != 'web':
+                                $result = $this->responseCode(['message' => 'wrong platform'], 'Invalid Platform', 422);
+                                break;
+                            case $checkPlatform->version != $request->header('IOT-VERSION'):
+                                $result = $this->responseCode(['message' => 'wrong version'], 'Invalid Version', 422);
+                                break;
+                            case $cekToken->role_user_idrole_user != 1:
+                                $result = $this->responseCode(['message' => 'your not admin'], 'Invalid Role', 422);
+                                break;
+                            default:
                                 $result = $next($request);
-                            } else {
-                                $result = $this->responseCode(['message' => 'wrong version'], 'Invalid Platform', 422);
-                            }
-                        } else {
-                            $result = $this->responseCode(['message' => 'wrong platform'], 'Invalid Platform', 422);
+                                break;
                         }
                         return $result;
                     });
