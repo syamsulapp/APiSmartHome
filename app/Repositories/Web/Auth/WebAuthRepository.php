@@ -32,13 +32,13 @@ class WebAuthRepository extends BaseRepository
                 } else {
                     $checkPassword = credential::check($login->password, $checkUsername->password);
                     if (!$checkPassword) {
-                        $result = $this->responseCode(['message' => 'username salah'], 'Failed Login', 422);
+                        $result = $this->responseCode(['message' => 'password salah'], 'Failed Login', 422);
                     } else {
-                        $user = $query->where('id', $checkUsername->id)->first();
-                        $createToken = array('token' => base64_encode(createToken::random(128)));
-                        $user->update(['token' => $createToken['token']]);
-                        $authSuccess = array('user' => $user, 'token' => $createToken);
-                        $result = $this->responseCode($authSuccess, 'SuccessFully Login');
+                        $createToken =  base64_encode(createToken::random(128));
+                        $query->where('id', $checkUsername->id)->update(['token' => $createToken]);
+                        $user['user'] = $checkUsername;
+                        $user['token'] = array('data' => $createToken);
+                        $result = $this->responseCode($user, 'SuccessFully Login');
                     }
                 }
                 return $result;
