@@ -60,6 +60,7 @@ class WebAuthRepository extends BaseRepository
         if (!$validator->fails()) {
             $result = $this->modelAdmin->when($register->username, function ($query) use ($register) {
                 $submitData = $register->only('username', 'password', 'email', 'role_user_idrole_user');
+                $submitData['password'] = credential::make($register->password);
                 $submitData['role_user_idrole_user'] = 1;
                 $query->create($submitData);
                 return $this->responseCode($submitData, 'Successfully Register');
