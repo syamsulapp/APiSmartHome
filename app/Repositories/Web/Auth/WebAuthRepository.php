@@ -55,7 +55,7 @@ class WebAuthRepository extends BaseRepository
         $validator = Validator::make($register->all(), [
             'username' => 'required|string|min:2',
             'password' => 'required|string|min:2',
-            'email' => 'required|email|min:2',
+            'email' => 'required|email|min:2|unique:admin',
         ]);
         if (!$validator->fails()) {
             $result = $this->modelAdmin->when($register->username, function ($query) use ($register) {
