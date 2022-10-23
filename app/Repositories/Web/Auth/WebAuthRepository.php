@@ -78,7 +78,7 @@ class WebAuthRepository extends BaseRepository
     public function logout($logout)
     {
         $user = $logout->header('IOT-WEB-TOKEN');
-        $result = $this->modelAdmin->when($logout, function ($query) use ($logout, $user) {
+        $result = $this->modelAdmin->when($logout, function ($query) use ($user) {
             $data = $query->where('token', $user)->first();
             $query->where('id', $data->id)->update(['token' => null]);
             return $this->responseCode(['message' => 'Successfully Logout'], 'Berhasil Logout');
