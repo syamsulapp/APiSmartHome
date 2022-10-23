@@ -12,6 +12,8 @@ class WebAuthRepository extends BaseRepository
 {
     protected $modelAdmin;
 
+    protected $auth;
+
     public function __construct(ModelsAdmin $modelAdmin)
     {
         $this->modelAdmin = $modelAdmin;
@@ -58,7 +60,7 @@ class WebAuthRepository extends BaseRepository
             'email' => 'required|email|min:2|unique:admin',
         ]);
         if (!$validator->fails()) {
-            $result = $this->modelAdmin->when($register->username, function ($query) use ($register) {
+            $result = $this->modelAdmin->when($register->password, function ($query) use ($register) {
                 $submitData = $register->only('username', 'password', 'email', 'role_user_idrole_user');
                 $submitData['password'] = credential::make($register->password);
                 $submitData['role_user_idrole_user'] = 1;
@@ -75,6 +77,5 @@ class WebAuthRepository extends BaseRepository
 
     public function logout($logout)
     {
-        return 'halo';
     }
 }

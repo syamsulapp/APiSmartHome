@@ -33,7 +33,7 @@ class AdminMiddleware extends BaseRepository
         if (!$request->header('IOT-API-TOKEN')) {
             $result = $this->responseCode(['message' => 'Session Over Please Login Again'], 'Unauthorized', 401);
         } else {
-            $cekToken = $this->admin->where('token', $request->header('IOT-API-TOKEN'))->first();
+            $cekToken = $this->admin->where('token', $request->header('IOT-WEB-TOKEN'))->first();
             if ($cekToken) {
                 if ($request->header('IOT-PLATFORM') && $request->header('IOT-VERSION')) {
                     $result = $this->version->when($request, function ($query) use ($request, $next, $cekToken) {
