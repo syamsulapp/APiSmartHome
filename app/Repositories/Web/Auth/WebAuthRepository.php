@@ -37,7 +37,7 @@ class WebAuthRepository extends BaseRepository
                         $createToken =  base64_encode(createToken::random(128));
                         $query->where('id', $checkUsername->id)->update(['token' => $createToken]);
                         $user['user'] = $checkUsername;
-                        $user['token'] = array('data' => $createToken);
+                        $checkUsername['token'] = array('data' => $createToken);
                         $result = $this->responseCode($user, 'SuccessFully Login');
                     }
                 }
@@ -75,6 +75,6 @@ class WebAuthRepository extends BaseRepository
 
     public function logout($logout)
     {
-        return 'halo';
+        return $logout->id;
     }
 }
