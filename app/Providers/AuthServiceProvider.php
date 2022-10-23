@@ -2,12 +2,10 @@
 
 namespace App\Providers;
 
-use App\Http\JsonBuilder\ReturnResponse;
+use App\Http\JsonBuilder\ReturnResponse as jsonBuilder;
 use App\Models\User;
-use Dusterio\LumenPassport\LumenPassport;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -29,17 +27,21 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Here you may define how you wish users to be authenticated for your Lumen
+        // Here you may define how you wish users to bse authenticated for your Lumen
         // application. The callback which receives the incoming request instance
         // should return either a User instance or null. You're free to obtain
         // the User instance via an API token or any other method necessary.
         $this->app['auth']->viaRequest('api', function (Request $request) {
-            $this->builder = new ReturnResponse;
+            $builder = new jsonBuilder;
+            $user = new User;
             try {
-                $result = User::where('api_token', $request->header('IOT_API_TOKEN'))->first();
-            } catch (Exception $error) {
-                $result = $this->builder->error401(['errors' => 'id salah'], $error);
+                $result = $user->when($request, function ($query) use ($request) {
+                    return $query->where('api_token', $request->header('IOT-API-TOKEN'))->first();
+                });
+            } catch (Exception) {
+                $result = $builder->error401(['message' => 'invalid token'], 'Invalid Token');
             }
+
             return $result;
         });
     }

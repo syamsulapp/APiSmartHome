@@ -75,6 +75,6 @@ class WebAuthRepository extends BaseRepository
 
     public function logout($logout)
     {
-        return $logout->id;
+        return 'halo';
     }
 }
