@@ -6,6 +6,7 @@ use App\Models\ScheduleModels;
 use App\Repositories\BaseRepository;
 use Exception;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ShowScheduleResource;
 
 class ScheduleRepository extends BaseRepository
 {
@@ -32,10 +33,18 @@ class ScheduleRepository extends BaseRepository
             })
                 ->orderBy('key_status_table_perangkat')
                 ->paginate($limit);
-            return $this->responseCode($data->items(), 'SuccessFully Data');
+            return $this->responseCode(ShowScheduleResource::collection($data->items()), 'SuccessFully Data');
         } catch (Exception $error) {
             return $this->responseCode($error, 'Error Sistem', 500);
         }
+    }
+
+    public function show($id)
+    {
+        $data = $this->modelSchedule
+            ->where('key_status_table_perangkat', $id)
+            ->get();
+        return $this->responseCode($data);
     }
 
     public function store($store)

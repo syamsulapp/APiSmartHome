@@ -20,6 +20,11 @@ class SchedulePerangkatController extends Controller
         return $this->scheduleRepository->index($index);
     }
 
+    public function detail($id)
+    {
+        return $this->scheduleRepository->show($id);
+    }
+
     public function store(Request $store)
     {
         return $this->scheduleRepository->store($store);

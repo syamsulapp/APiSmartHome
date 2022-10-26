@@ -64,28 +64,28 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->group(['prefix' => 'master', 'middleware' => ['admin'], 'namespace' => 'Master'], function () use ($router) {
             $router->group(['prefix' => 'schedule'], function () use ($router) {
                 $router->get('', 'SchedulePerangkatController@index');
-                $router->get('{id}', 'SchedulePerangkatController@show');
+                $router->get('show/{id}', 'SchedulePerangkatController@detail');
                 $router->post('', 'SchedulePerangkatController@store');
                 $router->put('', 'SchedulePerangkatController@update');
                 $router->delete('delete', 'SchedulePerangkatController@delete');
             });
             $router->group(['prefix' => 'role'], function () use ($router) {
                 $router->get('', 'RoleUsersController@index');
-                $router->get('{id}', 'RoleUsersController@show');
+                $router->get('show/{id}', 'RoleUsersController@show');
                 $router->post('', 'RoleUsersController@store');
                 $router->put('', 'RoleUsersController@update');
                 $router->delete('delete', 'RoleUsersController@delete');
             });
             $router->group(['prefix' => 'otomatisasi'], function () use ($router) {
                 $router->get('', 'OtomatisasiPerangkatController@index');
-                $router->get('{id}', 'OtomatisasiPerangkatController@show');
+                $router->get('show/{id}', 'OtomatisasiPerangkatController@show');
                 $router->post('', 'OtomatisasiPerangkatController@store');
                 $router->put('', 'OtomatisasiPerangkatController@update');
                 $router->delete('delete', 'OtomatisasiPerangkatController@delete');
             });
             $router->group(['prefix' => 'perangkat'], function () use ($router) {
                 $router->get('', 'PerangkatController@index');
-                $router->get('{id}', 'PerangkatController@show');
+                $router->get('show/{id}', 'PerangkatController@show');
                 $router->post('', 'PerangkatController@store');
                 $router->put('', 'PerangkatController@update');
                 $router->delete('delete', 'PerangkatController@delete');
@@ -95,13 +95,13 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             });
             $router->group(['prefix' => 'plaform'], function () use ($router) {
                 $router->get('', 'PlatformController@index');
-                $router->get('{id}', 'PlatformController@show');
+                $router->get('show/{id}', 'PlatformController@show');
                 $router->post('', 'PlatformController@index');
                 $router->put('', 'PlatformController@index');
                 $router->delete('delete', 'PlatformController@index');
                 $router->group(['prefix' => 'version'], function () use ($router) {
                     $router->get('', 'VersionController@index');
-                    $router->get('{id}', 'VersionController@show');
+                    $router->get('show/{id}', 'VersionController@show');
                     $router->post('', 'VersionController@store');
                     $router->put('', 'VersionController@update');
                     $router->delete('delete', 'VersionController@delete');
@@ -110,13 +110,13 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             $router->group(['prefix' => 'user'], function () use ($router) {
                 $router->group(['prefix' => 'admin'], function () use ($router) {
                     $router->get('', 'AdminController@index');
-                    $router->get('{id}', 'AdminController@show');
+                    $router->get('show/{id}', 'AdminController@show');
                     $router->post('', 'AdminController@index');
                     $router->put('', 'AdminController@index');
                     $router->delete('delete', 'AdminController@index');
                 });
                 $router->get('', 'UserController@index');
-                $router->get('{id}', 'UserController@show');
+                $router->get('show/{id}', 'UserController@show');
                 $router->post('', 'UserController@index');
                 $router->put('', 'UserController@index');
                 $router->delete('delete', 'UserController@index');
