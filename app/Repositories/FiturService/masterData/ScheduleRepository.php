@@ -35,7 +35,7 @@ class ScheduleRepository extends BaseRepository
                 ->paginate($limit);
             return $this->responseCode(ShowScheduleResource::collection($data->items()), 'SuccessFully Data');
         } catch (Exception $error) {
-            return $this->responseCode($error, 'Error Sistem', 500);
+            return $this->responseCode(['message' => 'error sistem'], $error, 500);
         }
     }
 
@@ -62,7 +62,7 @@ class ScheduleRepository extends BaseRepository
                     return $this->responseCode($data, 'SuccessFully Created Schedule');
                 });
             } catch (Exception $error) {
-                $result = $this->responseCode($error, 'Error Sistem', 500);
+                $result = $this->responseCode(['message' => 'error sistem'], $error, 500);
             }
         } else {
             $collect = collect($validator->errors());
@@ -90,7 +90,7 @@ class ScheduleRepository extends BaseRepository
                     return $this->responseCode($datas, 'SuccessFully Update Schedule');
                 });
             } catch (Exception $error) {
-                $result = $this->responseCode($error, 'Error Sistem', 500);
+                $result = $this->responseCode(['message' => 'error sistem'], $error, 500);
             }
         } else {
             $collect = collect($validator->errors());
@@ -117,7 +117,7 @@ class ScheduleRepository extends BaseRepository
                     return $this->responseCode($data, 'Successfully Delete Data');
                 });
             } catch (Exception $error) {
-                $result = $this->responseCode($error, 'Error Sistem', 500);
+                $result = $this->responseCode(['message' => 'Error Sistem'], $error, 500);
             }
         } else {
             $collect = collect($validator->errors());
