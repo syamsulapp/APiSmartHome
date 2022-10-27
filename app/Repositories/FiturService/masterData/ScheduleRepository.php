@@ -84,10 +84,15 @@ class ScheduleRepository extends BaseRepository
             try {
                 $result = $this->modelSchedule->when($update->id, function ($query) use ($update) {
                     $data = $update->only('start_at', 'end_at');
-                    $datas['last'] = $query->where('key_status_table_perangkat', $update->id)->first();
-                    $datas['new'] = $data;
-                    $query->where('key_status_table_perangkat', $update->id)->update($data);
-                    return $this->responseCode($datas, 'SuccessFully Update Schedule');
+                    if (!$query->where('key_status_table_perangkat', $update->id)
+                        ->first()) {
+                        return $this->responseCode(['message' => 'id tidak di temukan'], 'Id not found', 422);
+                    } else {
+                        $datas['last'] = $query->where('key_status_table_perangkat', $update->id)->first();
+                        $datas['new'] = $data;
+                        $query->where('key_status_table_perangkat', $update->id)->update($data);
+                        return $this->responseCode($datas, 'SuccessFully Update Schedule');
+                    }
                 });
             } catch (Exception $error) {
                 $result = $this->responseCode(['message' => 'error sistem'], $error, 500);
@@ -112,9 +117,10 @@ class ScheduleRepository extends BaseRepository
                     $data = $query->where('key_status_table_perangkat', $delete->id)->first();
                     if (!$data) {
                         $data = array('message' => 'data tidak di temukan');
+                    } else {
+                        $query->delete('key_status_table_perangkat', $delete->id);
+                        return $this->responseCode($data, 'Successfully Delete Data');
                     }
-                    $query->delete('key_status_table_perangkat', $delete->id);
-                    return $this->responseCode($data, 'Successfully Delete Data');
                 });
             } catch (Exception $error) {
                 $result = $this->responseCode(['message' => 'Error Sistem'], $error, 500);

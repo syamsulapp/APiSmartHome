@@ -78,7 +78,6 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             });
             $router->group(['prefix' => 'otomatisasi'], function () use ($router) {
                 $router->get('', 'OtomatisasiPerangkatController@index');
-                $router->get('show/{id}', 'OtomatisasiPerangkatController@show');
                 $router->post('', 'OtomatisasiPerangkatController@store');
                 $router->put('', 'OtomatisasiPerangkatController@update');
                 $router->delete('delete', 'OtomatisasiPerangkatController@delete');

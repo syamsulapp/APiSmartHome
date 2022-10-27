@@ -60,6 +60,7 @@ class ReturnResponse
 					'message' => $message == '' ? 'Error Sistem' : $message,
 					'data' => $data,
 				];
+				break;
 			default:
 				$respon = array('message' => 'status code ini bukan untuk 500');
 				break;
