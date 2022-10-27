@@ -85,12 +85,10 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             $router->group(['prefix' => 'perangkat'], function () use ($router) {
                 $router->get('', 'PerangkatController@index');
                 $router->get('show/{id}', 'PerangkatController@show');
-                $router->post('', 'PerangkatController@store');
-                $router->put('', 'PerangkatController@update');
-                $router->delete('delete', 'PerangkatController@delete');
             });
             $router->group(['prefix' => 'log'], function () use ($router) {
-                $router->get('/', 'LogController@index');
+                $router->get('', 'LogController@index');
+                $router->get('show/{id}', 'LogController@show');
             });
             $router->group(['prefix' => 'plaform'], function () use ($router) {
                 $router->get('', 'PlatformController@index');
