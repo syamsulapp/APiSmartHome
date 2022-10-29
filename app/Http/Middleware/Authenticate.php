@@ -68,7 +68,7 @@ class Authenticate
                             $result = $this->builder->error426(['message' => 'Please Upgrade Your Version App'], 'Upgrade Your Version');
                         }
                     } else {
-                        $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');
+                        $result = $this->builder->error401(['message' => 'Invalid Token'], 'Unauthorized');
                     }
                 } else {
                     $result = $this->builder->error401(['message' => 'Session Over Please Login'], 'Unauthorized');

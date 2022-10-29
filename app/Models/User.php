@@ -16,9 +16,12 @@ use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Model implements CanResetPasswordContract, AuthenticatableContract, AuthorizableContract
 {
+    use SoftDeletes;
+
     use CanResetPassword, Notifiable, HasApiTokens, Authenticatable, Authorizable, HasFactory;
 
     protected $table = 'table_users';
