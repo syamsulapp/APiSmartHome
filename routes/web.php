@@ -90,33 +90,25 @@ $router->group(['prefix' => 'user'], function () use ($router) {
                 $router->get('', 'LogController@index');
                 $router->get('show/{id}', 'LogController@show');
             });
-            $router->group(['prefix' => 'plaform'], function () use ($router) {
+            $router->group(['prefix' => 'platform_version', 'namespace' => 'Platform'], function () use ($router) {
                 $router->get('', 'PlatformController@index');
-                $router->get('show/{id}', 'PlatformController@show');
-                $router->post('', 'PlatformController@index');
-                $router->put('', 'PlatformController@index');
-                $router->delete('delete', 'PlatformController@index');
-                $router->group(['prefix' => 'version'], function () use ($router) {
-                    $router->get('', 'VersionController@index');
-                    $router->get('show/{id}', 'VersionController@show');
-                    $router->post('', 'VersionController@store');
-                    $router->put('', 'VersionController@update');
-                    $router->delete('delete', 'VersionController@delete');
-                });
+                $router->post('', 'PlatformController@store');
+                $router->put('', 'PlatformController@update');
+                $router->delete('delete', 'PlatformController@delete');
             });
             $router->group(['prefix' => 'user'], function () use ($router) {
-                $router->group(['prefix' => 'admin'], function () use ($router) {
-                    $router->get('', 'AdminController@index');
-                    $router->get('show/{id}', 'AdminController@show');
-                    $router->post('', 'AdminController@index');
-                    $router->put('', 'AdminController@index');
-                    $router->delete('delete', 'AdminController@index');
-                });
                 $router->get('', 'UserController@index');
                 $router->get('show/{id}', 'UserController@show');
-                $router->post('', 'UserController@index');
-                $router->put('', 'UserController@index');
-                $router->delete('delete', 'UserController@index');
+                $router->post('', 'UserController@store');
+                $router->put('', 'UserController@update');
+                $router->delete('delete', 'UserController@delete');
+            });
+            $router->group(['prefix' => 'admin'], function () use ($router) {
+                $router->get('', 'AdminController@index');
+                $router->get('show/{id}', 'AdminController@show');
+                $router->post('', 'AdminController@store');
+                $router->put('', 'AdminController@update');
+                $router->delete('delete', 'AdminController@delete');
             });
         });
     });
