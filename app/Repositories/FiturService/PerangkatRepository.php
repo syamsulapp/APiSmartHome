@@ -2,6 +2,7 @@
 
 namespace App\Repositories\FiturService;
 
+use App\Http\Resources\listDevicesResource;
 use App\Models\ClientKey;
 use App\Models\Devices_models;
 use App\Models\Pairing_devices;
@@ -51,7 +52,7 @@ class PerangkatRepository extends BaseRepository
             ->whereIn('table_users_id', [$this->userAuth()])
             ->orderBy('no')
             ->paginate($limit);
-        return $this->responseCode($data->items());
+        return $this->responseCode(listDevicesResource::collection($data->items()));
     }
 
     public static function insert($checkKeyPair)

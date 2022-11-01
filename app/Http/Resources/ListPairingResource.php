@@ -16,12 +16,13 @@ class ListPairingResource extends JsonResource
     public function toArray($request)
     {
         $user = User::authentikasi();
-        return [
-            'key' => $this->key,
-            'watt' => $this->watt,
-            'ampere' => $this->ampere,
-            'volt' => $this->volt,
-            'users' => $user
-        ];
+        return
+            [
+                'key' => $this->key,
+                'watt' => $this->watt,
+                'ampere' => $this->ampere,
+                'volt' => $this->volt,
+                'users' => $user
+            ];
     }
 }
