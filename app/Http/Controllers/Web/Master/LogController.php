@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Web\Master;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\FiturService\masterData\LogRepository;
+use App\Repositories\Web\Log\LogRepository;
 use Illuminate\Http\Request;
 
 class LogController extends Controller

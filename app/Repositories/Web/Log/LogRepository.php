@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\FiturService\masterData;
+namespace App\Repositories\Web\Log;
 
 use App\Models\LogModels;
 use App\Repositories\BaseRepository;
