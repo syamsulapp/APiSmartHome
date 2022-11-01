@@ -56,16 +56,22 @@ class Authenticate
         } else {
             $data = $this->user->when($request, function ($query) use ($request, $next) {
                 if ($request->header('IOT-API-TOKEN')) {
-                    if ($query->where('api_token', $request->header('IOT-API-TOKEN'))->first()) {
+                    $user = $query->where('api_token', $request->header('IOT-API-TOKEN'))->first();
+                    if ($user) {
                         $platform = $this->version->where('platform', $request->header('IOT-PLATFORM'))->first();
-                        if ($platform) {
-                            if ($request->header('IOT-VERSION') == $platform->version) {
+                        switch ($platform && $user) {
+                            case $platform->platform == 'web':
+                                $result = $this->builder->error426(['message' => 'platform wrong'], 'Please Upgrade App');
+                                break;
+                            case $platform->version != $request->header('IOT-VERSION'):
+                                $result = $this->builder->error426(['message' => 'version wrong'], 'Please Upgrade App');
+                                break;
+                            case $user->role_user_idrole_user != 2:
+                                $result = $this->builder->error426(['message' => 'your not users'], 'Invalid role');
+                                break;
+                            default:
                                 $result = $next($request);
-                            } else {
-                                $result = $this->builder->error426(['message' => 'version wrong'], 'Your version need update');
-                            }
-                        } else {
-                            $result = $this->builder->error426(['message' => 'Please Upgrade Your Version App'], 'Upgrade Your Version');
+                                break;
                         }
                     } else {
                         $result = $this->builder->error401(['message' => 'Invalid Token'], 'Unauthorized');
