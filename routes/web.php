@@ -31,16 +31,10 @@ $router->group(['prefix' => 'user'], function () use ($router) {
 
 
     $router->group(['prefix' => 'fitur', 'middleware' => 'client'], function () use ($router) {
-        //devices
-        $router->group(['prefix' => 'devices'], function () use ($router) {
-            $router->post('/', 'DevicesController@listDevices');
-            $router->post('detail', 'DevicesController@detailDevices');
-        });
-
-        //pairing perangkat
+        //Pairing
         $router->group(['prefix' => 'pairing'], function () use ($router) {
-            $router->post('/', 'DevicesController@listPairing');
-            $router->post('/devices', 'DevicesController@pairingPerangkat');
+            $router->get('', 'PairingController@index');
+            $router->post('', 'DevicesController@store');
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {
