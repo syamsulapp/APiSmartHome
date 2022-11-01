@@ -2,9 +2,12 @@
 
 namespace App\Repositories\FiturService;
 
+use App\Http\Resources\ListPairingResource;
+use App\Models\ClientKey;
 use App\Models\Pairing_devices;
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\Validator;
 
 class PairingRepository extends BaseRepository
 {
@@ -14,10 +17,19 @@ class PairingRepository extends BaseRepository
     // session user
     protected $user;
 
-    public function __construct(Pairing_devices $model, User $user)
+    //client key
+    protected $clientKey;
+
+    public function __construct(Pairing_devices $model, User $user, ClientKey $clientKey)
     {
         $this->model = $model;
         $this->user = $user;
+        $this->clientKey = $clientKey;
+    }
+
+    public function userAuth()
+    {
+        return $this->user->authentikasi()->id;
     }
 
     public function index($index)
@@ -29,14 +41,45 @@ class PairingRepository extends BaseRepository
         }
         $data = $this->model->when($index->key, function ($query) use ($index) {
             return $query->where('key', 'LIKE', "%{$index->key}%");
-        })->when($index->user, function ($query) use ($index) {
-            return $query->where('table_users_id', $index->user);
+        })->when($index->id, function ($query) use ($index) {
+            return $query->where('table_users_id', $index->id);
         })
+            ->whereIn('table_users_id', [$this->userAuth()])
             ->orderBy('key')
             ->paginate($limit);
+        return $this->responseCode(ListPairingResource::collection($data->items()));
     }
 
     public function store($store)
     {
+        $validate = Validator::make($store->all(), [
+            'key' => 'numeric|required',
+            'watt' => 'numeric|required',
+            'volt' => 'numeric|required',
+            'ampere' => 'numeric|required',
+        ]);
+
+        if (!$validate->fails()) {
+            $checkClientKey = $this->clientKey->where('client_key', $store->header('IOT-CLIENT-KEY'))->first();
+            if ($store->header('IOT-CLIENT-KEY') && $checkClientKey) {
+                $result = $this->model->when($store->key, function ($query) use ($store) {
+                    $dataPairing = $store->only('key', 'watt', 'ampere', 'volt', 'table_users_id');
+                    $dataPairing['table_users_id'] = $this->userAuth();
+                    $checkPair = $query->where('key', $store->key)->first();
+                    if (!$checkPair) {
+                        $query->create($dataPairing);
+                    } else {
+                        return $this->responseCode(['message' => 'has benn pairing'], 'Has been paired', 422);
+                    }
+                    return $this->responseCode(['message' => 'successfully pairing devices']);
+                });
+            } else {
+                $result = $this->responseCode(['message' => 'Wrong client key'], 'Please Upgreade Your App', 422);
+            }
+        } else {
+            $collect = collect($validate->errors());
+            $result = $this->customError($collect);
+        }
+        return $result;
     }
 }

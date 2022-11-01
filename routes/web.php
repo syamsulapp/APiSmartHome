@@ -34,7 +34,12 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         //Pairing
         $router->group(['prefix' => 'pairing'], function () use ($router) {
             $router->get('', 'PairingController@index');
-            $router->post('', 'DevicesController@store');
+            $router->post('', 'PairingController@store');
+        });
+
+        $router->group(['prefix' => 'devices'], function () use ($router) {
+            $router->get('', 'PerangkatController@index');
+            $router->post('', 'PerangkatController@store');
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {

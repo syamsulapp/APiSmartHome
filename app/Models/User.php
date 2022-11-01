@@ -44,7 +44,7 @@ class User extends Model implements CanResetPasswordContract, AuthenticatableCon
         'password', 'api_token', 'remember_token'
     ];
 
-    public function authentikasi()
+    public static function authentikasi()
     {
         return Auth::user();
     }
