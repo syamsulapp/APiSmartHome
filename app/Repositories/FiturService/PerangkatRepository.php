@@ -96,4 +96,36 @@ class PerangkatRepository extends BaseRepository
         }
         return $result;
     }
+
+
+
+    public function update($update)
+    {
+        $validate = Validator::make($update->all(), [
+            'key' => 'required|numeric',
+            'name' => 'string',
+            'schedule' => 'numeric',
+            'saklar' => 'numeric'
+        ]);
+
+        if (!$validate->fails()) {
+            $result = $this->modelDevices->when($update->name, function ($query) use ($update) {
+                $data = $update->only('name');
+                $query
+                    ->where('table_pairing_key', $update->key)
+                    ->update($data);
+                return $this->responseCode(['message' => 'successfully update nama']);
+            }, function ($query) use ($update) {
+                $query
+                    ->where('table_pairing_key', $update->key)
+                    ->update(['table_status_devices_key_status_perangkat' => $update->saklar]);
+                return $this->responseCode(['message' => 'successfully update saklar']);
+            });
+        } else {
+            $collect = collect($validate->errors());
+            $result = $this->customError($collect);
+        }
+
+        return $result;
+    }
 }

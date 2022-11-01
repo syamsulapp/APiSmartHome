@@ -40,6 +40,7 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->group(['prefix' => 'devices'], function () use ($router) {
             $router->get('', 'PerangkatController@index');
             $router->post('', 'PerangkatController@store');
+            $router->put('', 'PerangkatController@update');
         });
 
         $router->group(['prefix' => 'schedule'], function () use ($router) {
