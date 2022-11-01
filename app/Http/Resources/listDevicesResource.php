@@ -26,7 +26,7 @@ class listDevicesResource extends JsonResource
                 'ampere' => $this->ampere,
                 'watt' => $this->watt,
                 'user' => User::whereIn('id', [$this->table_users_id])->get(),
-                'otomatisasi' => Otomatisasi_perangkat::whereIn('status', [$this->table_status_devices_key_status_perangkat])->get(),
+                'otomatisasi' => Otomatisasi_perangkat::whereIn('key_status_perangkat', [$this->table_status_devices_key_status_perangkat])->get(),
                 'schedule' => ScheduleModels::whereIn('key_status_table_perangkat', [$this->table_schedule_devices_key_status_table_perangkat])->get(),
             ];
     }

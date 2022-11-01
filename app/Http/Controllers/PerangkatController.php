@@ -23,4 +23,9 @@ class PerangkatController extends Controller
     {
         return $this->perangkatRepository->store($store);
     }
+
+    public function update(Request $update)
+    {
+        return $this->perangkatRepository->update($update);
+    }
 }
