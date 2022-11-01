@@ -14,10 +14,11 @@ class ShowScheduleResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'id' => $this->key_status_table_perangkat,
-            'start_at' => $this->start_at,
-            'end_at' => $this->end_at,
-        ];
+        return
+            [
+                'id' => $this->key_status_table_perangkat,
+                'start_at' => $this->start_at,
+                'end_at' => $this->end_at,
+            ];
     }
 }

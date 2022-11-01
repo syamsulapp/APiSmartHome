@@ -50,43 +50,6 @@ class DevicesController extends Controller
     {
         return $this->crudDevices->add_devices($param, $this->modelPairing, $this->respon, $this->modelDevices, $this->user);
     }
-    /** method role Users */
-    public function get_role()
-    {
-        return $this->crudDevices->get_role($this->role, $this->respon);
-    }
-    public function add_role(Request $param)
-    {
-        return $this->crudDevices->add_role($param, $this->role, $this->respon);
-    }
-    public function update_role(Request $param)
-    {
-        return $this->crudDevices->update_role($param, $this->role, $this->respon);
-    }
-    public function delete_role(Request $param)
-    {
-        return $this->crudDevices->delete_role($param, $this->role, $this->respon);
-    }
-
-    /** method schedule perangkat */
-    public function get_schedule()
-    {
-        return $this->crudDevices->get_schedule($this->schedule, $this->respon);
-    }
-    public function add_schedule(Request $param)
-    {
-        return $this->crudDevices->add_schedule($param, $this->schedule, $this->respon);
-    }
-    public function update_schedule(Request $param)
-    {
-        return $this->crudDevices->update_schedule($param, $this->schedule, $this->respon);
-    }
-    public function delete_schedule(Request $param)
-    {
-        return $this->crudDevices->delete_schedule($param, $this->schedule, $this->respon);
-    }
-
-    /** method otomatisasi perangkat */
 
     /**
      * END (routes api master data)
