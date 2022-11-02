@@ -109,18 +109,23 @@ class PerangkatRepository extends BaseRepository
         ]);
 
         if (!$validate->fails()) {
-            $result = $this->modelDevices->when($update->name, function ($query) use ($update) {
-                $data = $update->only('name');
-                $query
-                    ->where('table_pairing_key', $update->key)
-                    ->update($data);
-                return $this->responseCode(['message' => 'successfully update nama']);
-            }, function ($query) use ($update) {
-                $query
-                    ->where('table_pairing_key', $update->key)
-                    ->update(['table_status_devices_key_status_perangkat' => $update->saklar]);
-                return $this->responseCode(['message' => 'successfully update saklar']);
-            });
+            $checkClientKey = $this->clientKey->where('client_key', $update->header('IOT-CLIENT-KEY'))->first();
+            if ($update->header('IOT-CLIENT-KEY') && $checkClientKey) {
+                $result = $this->modelDevices->when($update->name, function ($query) use ($update) {
+                    $data = $update->only('name');
+                    $query
+                        ->where('table_pairing_key', $update->key)
+                        ->update($data);
+                    return $this->responseCode(['message' => 'successfully update nama']);
+                }, function ($query) use ($update) {
+                    $query
+                        ->where('table_pairing_key', $update->key)
+                        ->update(['table_status_devices_key_status_perangkat' => $update->saklar]);
+                    return $this->responseCode(['message' => 'successfully update saklar']);
+                });
+            } else {
+                $result = $this->responseCode(['message' => 'wrong client key'], 'Please Upgrade Your App', 422);
+            }
         } else {
             $collect = collect($validate->errors());
             $result = $this->customError($collect);
