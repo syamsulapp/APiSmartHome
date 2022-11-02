@@ -3,6 +3,7 @@
 namespace App\Repositories\FiturService;
 
 use App\Models\ClientKey;
+use App\Models\Devices_models;
 use App\Models\ScheduleModels;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -14,11 +15,15 @@ class ScheduleRepository extends BaseRepository
 
     protected $clientKey;
 
-    public function __construct(ScheduleModels $modelschedule, ClientKey $clientKey)
+    protected $modelDevices;
+
+    public function __construct(ScheduleModels $modelschedule, ClientKey $clientKey, Devices_models $modelDevices)
     {
         $this->modelschedule = $modelschedule;
 
         $this->clientKey = $clientKey;
+
+        $this->modelDevices = $modelDevices;
     }
 
     public function userAuth()
@@ -45,6 +50,33 @@ class ScheduleRepository extends BaseRepository
 
     public function set($set)
     {
+        $validator = Validator::make($set->all(), [
+            'key' => 'required|numeric',
+            'id_schedule' => 'required|numeric'
+        ]);
+        if (!$validator->fails()) {
+            $result = $this->modelDevices->when($set->id_schedule, function ($query) use ($set) {
+                $idSchedule = $this->modelschedule
+                    ->where('key_status_table_perangkat', $set->id_schedule)
+                    ->first();
+                if ($idSchedule && $query->where('table_pairing_key', $set->key)->first()) {
+                    $query
+                        ->where('table_pairing_key', $set->key)
+                        ->update(
+                            [
+                                'table_schedule_devices_key_status_table_perangkat' => $idSchedule->key_status_table_perangkat,
+                            ]
+                        );
+                } else {
+                    return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 4222);
+                }
+                return $this->responseCode(['message' => 'Schedule is sets']);
+            });
+        } else {
+            $collect = collect($validator->errors());
+            $result = $this->customError($collect);
+        }
+        return $result;
     }
 
     public function store($store)
