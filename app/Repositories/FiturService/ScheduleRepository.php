@@ -86,12 +86,17 @@ class ScheduleRepository extends BaseRepository
         if (!$validate->fails()) {
             $checkClientKey = $this->clientKey->where('client_key', $update->header('IOT-CLIENT-KEY'))->first();
             if ($update->header('IOT-CLIENT-KEY') && $checkClientKey) {
-                $result = $this->modelschedule->when($update->start_at, function ($query) use ($update) {
-                    $data = $update->only('start_at', 'end_at');
-                    $query
-                        ->where('key_status_table_perangkat', $update->id)
-                        ->update($data);
-                    return $this->responseCode(['message' => 'successfully update schedule']);
+                $result = $this->modelschedule->when($update->id, function ($query) use ($update) {
+                    $checkId = $query->where('key_status_table_perangkat', $update->id)->first();
+                    if ($checkId) {
+                        $data = $update->only('start_at', 'end_at');
+                        $query
+                            ->where('key_status_table_perangkat', $update->id)
+                            ->update($data);
+                        return $this->responseCode(['message' => 'successfully update schedule']);
+                    } else {
+                        return $this->responseCode(['message' => 'id tidak ada'], 'id not found', 422);
+                    }
                 });
             } else {
                 $result = $this->responseCode(['message' => 'wrong client key'], 'Please Upgrade Your App', 422);
@@ -111,8 +116,13 @@ class ScheduleRepository extends BaseRepository
         ]);
 
         if (!$validate->fails()) {
-            $result = $this->modelschedule->when($delete->start_at, function ($query) use ($delete) {
-                $query->delete('key_status_table_perangkat', $delete->id);
+            $result = $this->modelschedule->when($delete->id, function ($query) use ($delete) {
+                $checkId = $query->where('key_status_table_perangkat', $delete->id)->first();
+                if ($checkId) {
+                    $query->delete('key_status_table_perangkat', $delete->id);
+                } else {
+                    return $this->responseCode(['message' => 'id tidak ada '], 'id not found', 422);
+                }
                 return $this->responseCode(['message' => 'successfully delete schedule']);
             });
         } else {

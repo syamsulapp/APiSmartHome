@@ -48,7 +48,7 @@ $router->group(['prefix' => 'user'], function () use ($router) {
             $router->post('', 'SchedulePerangkat@store');
             $router->put('', 'SchedulePerangkat@update');
             $router->put('devices', 'SchedulePerangkat@set');
-            $router->delete('', 'SchedulePerangkat@delete');
+            $router->delete('delete', 'SchedulePerangkat@delete');
         });
 
         // hemat daya fitur users
