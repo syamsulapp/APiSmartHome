@@ -70,7 +70,7 @@ class ScheduleRepository extends BaseRepository
                                 ]
                             );
                     } else {
-                        return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 4222);
+                        return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 422);
                     }
                 } else {
                     return $this->responseCode(['message' => 'wrong client key'], 'invalid client key', 422);
