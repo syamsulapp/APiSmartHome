@@ -59,16 +59,21 @@ class ScheduleRepository extends BaseRepository
                 $idSchedule = $this->modelschedule
                     ->where('key_status_table_perangkat', $set->id_schedule)
                     ->first();
-                if ($idSchedule && $query->where('table_pairing_key', $set->key)->first()) {
-                    $query
-                        ->where('table_pairing_key', $set->key)
-                        ->update(
-                            [
-                                'table_schedule_devices_key_status_table_perangkat' => $idSchedule->key_status_table_perangkat,
-                            ]
-                        );
+                $checkClientKey = $this->clientKey->where('client_key', $set->header('IOT-CLIENT-KEY'))->first();
+                if ($set->header('IOT-CLIENT-KEY') && $checkClientKey) {
+                    if ($idSchedule && $query->where('table_pairing_key', $set->key)->first()) {
+                        $query
+                            ->where('table_pairing_key', $set->key)
+                            ->update(
+                                [
+                                    'table_schedule_devices_key_status_table_perangkat' => $idSchedule->key_status_table_perangkat,
+                                ]
+                            );
+                    } else {
+                        return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 4222);
+                    }
                 } else {
-                    return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 4222);
+                    return $this->responseCode(['message' => 'wrong client key'], 'invalid client key', 422);
                 }
                 return $this->responseCode(['message' => 'Schedule is sets']);
             });
