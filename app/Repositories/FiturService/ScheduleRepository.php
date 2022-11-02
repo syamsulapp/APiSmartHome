@@ -69,13 +69,13 @@ class ScheduleRepository extends BaseRepository
                                     'table_schedule_devices_key_status_table_perangkat' => $idSchedule->key_status_table_perangkat,
                                 ]
                             );
+                        return $this->responseCode(['message' => 'Schedule is sets']);
                     } else {
                         return $this->responseCode(['message' => 'key atau schedule salah'], 'not found', 422);
                     }
                 } else {
                     return $this->responseCode(['message' => 'wrong client key'], 'invalid client key', 422);
                 }
-                return $this->responseCode(['message' => 'Schedule is sets']);
             });
         } else {
             $collect = collect($validator->errors());
