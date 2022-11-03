@@ -5,6 +5,7 @@ namespace App\Repositories\FiturService;
 use App\Http\Resources\listDevicesResource;
 use App\Models\ClientKey;
 use App\Models\Devices_models;
+use App\Models\LogModels;
 use App\Models\Pairing_devices;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -24,12 +25,16 @@ class PerangkatRepository extends BaseRepository
     // models ciient key
     protected $modelPair;
 
-    public function __construct(Devices_models $modelDevices, User $user, ClientKey $clientKey, Pairing_devices $modelPair)
+    //log
+    protected $logCreate;
+
+    public function __construct(Devices_models $modelDevices, User $user, ClientKey $clientKey, Pairing_devices $modelPair, LogModels $logCreate)
     {
         $this->modelDevices = $modelDevices;
         $this->user = $user;
         $this->clientKey = $clientKey;
         $this->modelPair = $modelPair;
+        $this->logCreate = $logCreate;
     }
 
     public function userAuth()
@@ -68,6 +73,15 @@ class PerangkatRepository extends BaseRepository
         );
     }
 
+    public static function log($store, $key, $auth)
+    {
+        return array(
+            'ip' => $store->ip(),
+            'aktivitas' => 'Add Devices ' . $key,
+            'table_users_id' => $auth
+        );
+    }
+
     public function store($store)
     {
         $validate = Validator::make($store->all(), [
@@ -82,6 +96,8 @@ class PerangkatRepository extends BaseRepository
                     if ($checkKeyPair) {
                         $data = $this->insert($checkKeyPair);
                         $query->create($data);
+                        $log = $this->log($store, $store->key, $this->userAuth());
+                        $this->logCreate->create($log);
                         return $this->responseCode(['message' => 'successfully add devices']);
                     } else {
                         return  $this->responseCode(['message' => 'key tidak ada'], 'Key Not Found', 422);
