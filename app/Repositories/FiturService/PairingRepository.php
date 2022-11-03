@@ -4,6 +4,7 @@ namespace App\Repositories\FiturService;
 
 use App\Http\Resources\ListPairingResource;
 use App\Models\ClientKey;
+use App\Models\LogModels;
 use App\Models\Pairing_devices;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -20,11 +21,15 @@ class PairingRepository extends BaseRepository
     //client key
     protected $clientKey;
 
-    public function __construct(Pairing_devices $model, User $user, ClientKey $clientKey)
+    //log
+    protected $log;
+
+    public function __construct(Pairing_devices $model, User $user, ClientKey $clientKey, LogModels $log)
     {
         $this->model = $model;
         $this->user = $user;
         $this->clientKey = $clientKey;
+        $this->log = $log;
     }
 
     public function userAuth()
@@ -50,6 +55,15 @@ class PairingRepository extends BaseRepository
         return $this->responseCode(ListPairingResource::collection($data->items()));
     }
 
+    public static function logPairing($store, $key, $auth)
+    {
+        return array(
+            'ip' => $store->ip(),
+            'aktivitas' => 'Pairing devices ' . $key,
+            'table_users_id' => $auth
+        );
+    }
+
     public function store($store)
     {
         $validate = Validator::make($store->all(), [
@@ -68,6 +82,8 @@ class PairingRepository extends BaseRepository
                     $checkPair = $query->where('key', $store->key)->first();
                     if (!$checkPair) {
                         $query->create($dataPairing);
+                        $data = $this->logPairing($store, $store->key, $this->userAuth());
+                        $this->log->create($data);
                     } else {
                         return $this->responseCode(['message' => 'has benn pairing'], 'Has been paired', 422);
                     }
