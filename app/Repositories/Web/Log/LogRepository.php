@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Web\Log;
 
+use App\Http\Resources\LogResource;
 use App\Models\LogModels;
 use App\Repositories\BaseRepository;
 
@@ -29,7 +30,7 @@ class LogRepository extends BaseRepository
         })
             ->orderBy('id')
             ->paginate($limit);
-        return $this->responseCode($data->items());
+        return $this->responseCode(LogResource::collection($data->items()));
     }
     public function show($id)
     {
