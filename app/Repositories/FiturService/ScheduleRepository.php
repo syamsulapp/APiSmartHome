@@ -8,22 +8,31 @@ use App\Models\ScheduleModels;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class ScheduleRepository extends BaseRepository
 {
+    // model schedule property
     protected $modelschedule;
 
+    // model clientky property
     protected $clientKey;
 
+    // model devices property
     protected $modelDevices;
 
-    public function __construct(ScheduleModels $modelschedule, ClientKey $clientKey, Devices_models $modelDevices)
+    // property carbon
+    protected $carbon;
+
+    public function __construct(ScheduleModels $modelschedule, ClientKey $clientKey, Devices_models $modelDevices, Carbon $carbon)
     {
         $this->modelschedule = $modelschedule;
 
         $this->clientKey = $clientKey;
 
         $this->modelDevices = $modelDevices;
+
+        $this->carbon = $carbon;
     }
 
     public function userAuth()
@@ -167,6 +176,46 @@ class ScheduleRepository extends BaseRepository
             $result = $this->customError($collect);
         }
 
+        return $result;
+    }
+
+    public function log($log)
+    {
+        $validasi = Validator::make($log->all(), [
+            'key' => 'required|numeric'
+        ]);
+
+        if (!$validasi->fails()) {
+            $result = $this->modelschedule->when($log->key, function ($query) use ($log) {
+                $key = $this->modelDevices
+                    ->where('table_pairing_key', $log->key)
+                    ->first();
+                if ($key) {
+                    $time = $this->carbon->now();
+                    $checkIdSchedule = $query
+                        ->where('key_status_table_perangkat', $key->table_schedule_devices_key_status_table_perangkat)
+                        ->first();
+                    $timezone = $time->timezone('Asia/Makassar')->format('h:i:s');
+                    if ($timezone >= $checkIdSchedule->start_at && $timezone <= $checkIdSchedule->end_at) {
+                        $key
+                            ->where('table_pairing_key', $key->table_pairing_key)
+                            ->update(['table_status_devices_key_status_perangkat' => 1]);
+                        return $this->responseCode(['message' => 'perangkat on']);
+                    } else {
+                        $key
+                            ->where('table_pairing_key', $key->table_pairing_key)
+                            ->update(['table_status_devices_key_status_perangkat' => 2]);
+                        return $this->responseCode(['message' => 'perangkat off']);
+                    }
+                    return $timezone;
+                } else {
+                    return $this->responseCode(['message' => 'id tidak di temukan'], 'id not found', 422);
+                }
+            });
+        } else {
+            $collect = collect($validasi->errors());
+            $result = $this->customError($collect);
+        }
         return $result;
     }
 }

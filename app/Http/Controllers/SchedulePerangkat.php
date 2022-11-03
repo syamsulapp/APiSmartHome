@@ -38,4 +38,9 @@ class SchedulePerangkat extends Controller
     {
         return $this->repoSchedule->set($set);
     }
+
+    public function log(Request $log)
+    {
+        return $this->repoSchedule->log($log);
+    }
 }

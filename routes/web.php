@@ -46,14 +46,15 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->group(['prefix' => 'schedule'], function () use ($router) {
             $router->get('', 'SchedulePerangkat@index');
             $router->post('', 'SchedulePerangkat@store');
+            $router->post('log', 'SchedulePerangkat@log');
             $router->put('', 'SchedulePerangkat@update');
             $router->put('devices', 'SchedulePerangkat@set');
             $router->delete('delete', 'SchedulePerangkat@delete');
         });
 
         // hemat daya fitur users
-        $router->group(['prefix' => 'hematDaya'], function () use ($router) {
-            $router->post('/', 'DevicesController@hematDaya');
+        $router->group(['prefix' => 'hemat_daya'], function () use ($router) {
+            $router->post('/', 'HematDayaController@save');
         });
     });
 
