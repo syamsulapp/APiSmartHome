@@ -19,6 +19,7 @@ class LogResource extends JsonResource
             [
                 'id' => $this->id,
                 'aktivitas' => $this->id,
+                'ip' => $this->ip,
                 'table_users_id' => User::whereIn('id', [$this->table_users_id])->get(),
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at
